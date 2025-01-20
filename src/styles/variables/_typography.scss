@@ -1,0 +1,48 @@
+// typography.scss
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Caveat&family=Inter:wght@400;600&display=swap');
+
+// Design Typography
+$font-family-header: 'Pacifico', sans-serif;
+$font-family-h1: 'Pacifico', sans-serif;
+$font-family-h2: 'Caveat', sans-serif;
+$font-family-body: 'Caveat', sans-serif;
+$font-family-body-highlight: 'Caveat', sans-serif;
+$font-family-neutral: 'Inter', sans-serif;
+
+$font-size-header: 40px;
+$font-size-h1: 20px;
+$font-size-h2: 20px;
+$font-size-body: 16px;
+$font-size-body-highlight: 16px;
+$font-size-neutral: 16px;
+
+$font-weight-header: 400;
+$font-weight-h1: 400;
+$font-weight-h2: 400;
+$font-weight-body: 400;
+$font-weight-body-highlight: 600;
+$font-weight-neutral: 400;
+
+// Variables CSS pour styled-components
+:root {
+  --font-family-header: #{$font-family-header};
+  --font-family-h1: #{$font-family-h1};
+  --font-family-h2: #{$font-family-h2};
+  --font-family-body: #{$font-family-body};
+  --font-family-body-highlight: #{$font-family-body-highlight};
+  --font-family-neutral: #{$font-family-neutral};
+
+  --font-size-header: #{$font-size-header};
+  --font-size-h1: #{$font-size-h1};
+  --font-size-h2: #{$font-size-h2};
+  --font-size-body: #{$font-size-body};
+  --font-size-body-highlight: #{$font-size-body-highlight};
+  --font-size-neutral: #{$font-size-neutral};
+
+  --font-weight-header: #{$font-weight-header};
+  --font-weight-h1: #{$font-weight-h1};
+  --font-weight-h2: #{$font-weight-h2};
+  --font-weight-body: #{$font-weight-body};
+  --font-weight-body-highlight: #{$font-weight-body-highlight};
+  --font-weight-neutral: #{$font-weight-neutral};
+}
