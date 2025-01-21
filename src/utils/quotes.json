@@ -1,42 +1,206 @@
 [
   {
-    "text": "Le bonheur ne dépend pas de ce que tu possèdes, mais de ce que tu penses.",
-    "author": "Bouddha"
+    "text": "Petit à petit, l'oiseau fait son nid.",
+    "author": ""
   },
   {
-    "text": "La plus grande victoire est de se maîtriser soi-même.",
-    "author": "Platon"
+    "text": "Après la pluie, le beau temps.",
+    "author": ""
   },
   {
-    "text": "La sérénité vient lorsque tu échanges les attentes contre l'acceptation.",
-    "author": "Eckhart Tolle"
+    "text": "Qui ne risque rien n’a rien.",
+    "author": ""
   },
   {
-    "text": "Ce n’est pas la montagne que nous conquérons, mais nous-mêmes.",
-    "author": "Edmund Hillary"
+    "text": "L'espoir fait vivre.",
+    "author": ""
   },
   {
-    "text": "Sois le changement que tu veux voir dans le monde.",
-    "author": "Mahatma Gandhi"
+    "text": "Le temps perdu ne se rattrape jamais.",
+    "author": ""
   },
   {
-    "text": "La gratitude transforme ce que nous avons en assez.",
-    "author": "Melody Beattie"
+    "text": "Tout vient à point à qui sait attendre.",
+    "author": ""
   },
   {
-    "text": "Le voyage de mille lieues commence toujours par un premier pas.",
-    "author": "Lao Tseu"
+    "text": "Il n'y a pas de fumée sans feu.",
+    "author": ""
   },
   {
-    "text": "Nous devenons ce que nous pensons.",
-    "author": "Earl Nightingale"
+    "text": "Mieux vaut tard que jamais.",
+    "author": ""
   },
   {
-    "text": "Ce que vous faites aujourd'hui peut améliorer tous vos lendemains.",
-    "author": "Ralph Marston"
+    "text": "Les absents ont toujours tort.",
+    "author": ""
   },
   {
-    "text": "Le succès n’est pas final, l’échec n’est pas fatal : c’est le courage de continuer qui compte.",
-    "author": "Winston Churchill"
+    "text": "On ne change pas une équipe qui gagne.",
+    "author": ""
+  },
+  {
+    "text": "Trop de cuisiniers gâtent la sauce.",
+    "author": ""
+  },
+  {
+    "text": "L’union fait la force.",
+    "author": ""
+  },
+  {
+    "text": "Qui sème le vent récolte la tempête.",
+    "author": ""
+  },
+  {
+    "text": "L’argent ne fait pas le bonheur.",
+    "author": ""
+  },
+  {
+    "text": "On n'apprend pas aux vieux singes à faire des grimaces.",
+    "author": ""
+  },
+  {
+    "text": "Il faut battre le fer tant qu'il est chaud.",
+    "author": ""
+  },
+  {
+    "text": "Les bons comptes font les bons amis.",
+    "author": ""
+  },
+  {
+    "text": "Qui va lentement va sûrement.",
+    "author": ""
+  },
+  {
+    "text": "Il ne faut jamais dire : fontaine, je ne boirai pas de ton eau.",
+    "author": ""
+  },
+  {
+    "text": "Quand on veut, on peut.",
+    "author": ""
+  },
+  {
+    "text": "Un tiens vaut mieux que deux tu l'auras.",
+    "author": ""
+  },
+  {
+    "text": "Il vaut mieux prévenir que guérir.",
+    "author": ""
+  },
+  {
+    "text": "À chaque jour suffit sa peine.",
+    "author": ""
+  },
+  {
+    "text": "Il n’y a pas de rose sans épines.",
+    "author": ""
+  },
+  {
+    "text": "La nuit porte conseil.",
+    "author": ""
+  },
+  {
+    "text": "Charbonnier est maître chez soi.",
+    "author": ""
+  },
+  {
+    "text": "On ne fait pas d’omelette sans casser des œufs.",
+    "author": ""
+  },
+  {
+    "text": "Il faut tourner sept fois sa langue dans sa bouche avant de parler.",
+    "author": ""
+  },
+  {
+    "text": "C'est en forgeant qu'on devient forgeron.",
+    "author": ""
+  },
+  {
+    "text": "Chacun voit midi à sa porte.",
+    "author": ""
+  },
+  {
+    "text": "Pierre qui roule n'amasse pas mousse.",
+    "author": ""
+  },
+  {
+    "text": "Il faut rendre à César ce qui est à César.",
+    "author": ""
+  },
+  {
+    "text": "L'habit ne fait pas le moine.",
+    "author": ""
+  },
+  {
+    "text": "Qui aime bien châtie bien.",
+    "author": ""
+  },
+  {
+    "text": "La fortune sourit aux audacieux.",
+    "author": ""
+  },
+  {
+    "text": "La faim chasse le loup du bois.",
+    "author": ""
+  },
+  {
+    "text": "Les grandes douleurs sont muettes.",
+    "author": ""
+  },
+  {
+    "text": "Mieux vaut être seul que mal accompagné.",
+    "author": ""
+  },
+  {
+    "text": "Il ne faut pas mettre tous ses œufs dans le même panier.",
+    "author": ""
+  },
+  {
+    "text": "Chat échaudé craint l’eau froide.",
+    "author": ""
+  },
+  {
+    "text": "À bon chat, bon rat.",
+    "author": ""
+  },
+  {
+    "text": "Qui court deux lièvres à la fois n’en attrape aucun.",
+    "author": ""
+  },
+  {
+    "text": "On récolte ce que l’on sème.",
+    "author": ""
+  },
+  {
+    "text": "Il n’est pire aveugle que celui qui ne veut pas voir.",
+    "author": ""
+  },
+  {
+    "text": "À cheval donné, on ne regarde pas la bride.",
+    "author": ""
+  },
+  {
+    "text": "Tel père, tel fils.",
+    "author": ""
+  },
+  {
+    "text": "La vengeance est un plat qui se mange froid.",
+    "author": ""
+  },
+  {
+    "text": "Rien ne sert de courir, il faut partir à point.",
+    "author": ""
+  },
+  {
+    "text": "Nul n’est prophète en son pays.",
+    "author": ""
+  },
+  {
+    "text": "Tant va la cruche à l'eau qu'à la fin elle se casse.",
+    "author": ""
+  },
+  {
+    "text": "Les chiens aboient, la caravane passe.",
+    "author": ""
   }
 ]

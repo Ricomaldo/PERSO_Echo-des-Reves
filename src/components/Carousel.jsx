@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import quotes from '../utils/quotes';
 
@@ -9,7 +9,6 @@ const CarouselWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100%;
-  position: relative;
   font-family: 'Caveat', cursive;
 `;
 
@@ -29,7 +28,6 @@ const QuoteAuthor = styled.div`
   font-size: 16px;
   color: ${({ theme }) => theme.colors.text};
   margin: 32px 64px;
-  // align-self: flex-end;
 `;
 
 const NavigationButton = styled.button`
@@ -42,6 +40,9 @@ const NavigationButton = styled.button`
   font-size: 24px;
   color: ${({ theme }) => theme.colors.secondary};
   &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+  &:active {
     color: ${({ theme }) => theme.colors.interaction};
   }
 `;
@@ -60,6 +61,12 @@ const ChevronIcon = styled.i`
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    // Choisir une citation aléatoirement au montage du composant
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setCurrentIndex(randomIndex);
+  }, []);
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0;

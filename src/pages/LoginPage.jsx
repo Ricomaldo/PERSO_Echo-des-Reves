@@ -1,3 +1,4 @@
+import { useUser } from '../utils/contexts/UserProvider';
 import ThemeToggle from '../components/ThemeToggle';
 import PageTitle from '../components/PageTitle';
 import ProfilCard from '../components/ProfilCard';
@@ -33,7 +34,9 @@ const QuoteBloc = styled.div`
   box-shadow: 0 4px 8px ${({ theme }) => theme.colors.shadow}; /* Ombre dynamique */
 `;
 
-const AccueilConnexion = () => {
+const LoginPage = () => {
+  const { changeUser } = useUser();
+
   return (
     <>
       <ThemeToggleWrapper>
@@ -41,8 +44,12 @@ const AccueilConnexion = () => {
       </ThemeToggleWrapper>
       <PageTitle title="Sélection du héros" />
       <ProfilSelector>
-        {users.map((user, index) => (
-          <ProfilCard key={index} user={user} />
+        {users.map((user) => (
+          <ProfilCard
+            key={user.name}
+            user={user}
+            onClick={() => changeUser(user.name)} // Appelle `changeUser` au clic
+          />
         ))}
       </ProfilSelector>
       <QuoteBloc>
@@ -52,4 +59,4 @@ const AccueilConnexion = () => {
   );
 };
 
-export default AccueilConnexion;
+export default LoginPage;

@@ -5,11 +5,14 @@ const ProfilWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
   justify-content: center;
-  text-align: center;
-  justify-content: space-between;
   gap: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05); // Effet au survol
+  }
 
   img {
     border-radius: 50%;
@@ -18,15 +21,16 @@ const ProfilWrapper = styled.div`
     object-fit: cover;
     border: 4px solid ${({ theme }) => theme.colors.primary};
   }
+
   h1 {
     color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
 // Composant ProfilCard
-function ProfilCard({ user }) {
+function ProfilCard({ user, onClick }) {
   return (
-    <ProfilWrapper>
+    <ProfilWrapper onClick={onClick}>
       <img src={user.avatar} alt={`Avatar de ${user.name}`} />
       <h1>{user.pseudo}</h1>
     </ProfilWrapper>

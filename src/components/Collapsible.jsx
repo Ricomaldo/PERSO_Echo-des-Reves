@@ -1,5 +1,5 @@
 import { Component, useContext, useState } from 'react';
-import { UserContext } from '../contexts/UserContext';
+import { UserContext } from '../utils/contexts/UserContext';
 // import '../styles/components/_collapsibleSection.scss';
 
 const CollapsibleSection = ({ title, content }) => {

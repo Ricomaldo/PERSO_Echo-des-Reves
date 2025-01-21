@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ThemeContext } from '../utils/context';
+import { ThemeContext } from '../utils/contexts/ThemeProvider';
 import styled from 'styled-components';
 
 const ToggleWrapper = styled.div`

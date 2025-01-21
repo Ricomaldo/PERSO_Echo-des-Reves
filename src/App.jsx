@@ -4,7 +4,7 @@ import Header from './layout/Header';
 import HeaderLogin from './layout/HeaderLogin';
 import Footer from './layout/Footer';
 
-import Login from './pages/Login';
+import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import ApercuObjectifs from './pages/ApercuObjectifs';
 import Calendrier from './pages/Calendrier';
@@ -22,7 +22,7 @@ function App() {
       {isLoginPage ? <HeaderLogin /> : <Header />}{' '}
       <main className="content">
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/objectifs" element={<ApercuObjectifs />} />
           <Route path="/calendrier" element={<Calendrier />} />

@@ -1,5 +1,3 @@
-// src/utils/theme/theme.js
-
 // Couleurs
 export const colors = {
   primary: '#0ba4b3',
@@ -43,7 +41,7 @@ export const darkTheme = {
     background: colors.backgroundDark,
     text: colors.textDark,
     backgroundNeutral: colors.backgroundNeutralDark,
-    shadow: 'rgba(255, 255, 255, 0.1)', // Ombre subtile pour le mode sombre
+    shadow: 'rgba(255, 255, 255, 0.1)',
   },
   typography,
 };
@@ -55,16 +53,11 @@ export const lightTheme = {
     background: colors.backgroundLight,
     text: colors.textLight,
     backgroundNeutral: colors.backgroundNeutralLight,
-    shadow: 'rgba(0, 0, 0, 0.2)', // Ombre légère pour le mode clair
+    shadow: 'rgba(0, 0, 0, 0.2)',
   },
   typography,
 };
 
-// Exporter les thèmes pour utilisation
 export const getTheme = (mode) => {
-  if (mode === 'dark') {
-    return { ...darkTheme }; // Crée une nouvelle instance de darkTheme
-  } else {
-    return { ...lightTheme }; // Crée une nouvelle instance de lightTheme
-  }
+  return mode === 'dark' ? { ...darkTheme } : { ...lightTheme };
 };
