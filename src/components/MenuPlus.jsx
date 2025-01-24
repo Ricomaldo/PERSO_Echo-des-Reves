@@ -1,5 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import RocketIcon from '@assets/icons/rocket.svg?react';
+import Notebook from '@assets/icons/notebook-pen.svg?react';
 
 const MenuPlusContainer = styled.nav`
   position: fixed;
@@ -7,23 +10,92 @@ const MenuPlusContainer = styled.nav`
   left: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 0 8px;
+  padding: 8px;
   width: 100%;
   height: ${({ $isOpen }) => ($isOpen ? '128px' : '0px')};
-  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
   transition: height 0.3s ease, opacity 0.3s ease;
-  visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
+  visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
   border-radius: 16px 16px 0 0;
-  background-color: var(--bg-dark-color);
-  border: 1px solid var(--border-neutral-color);
+  background-color: ${({ theme }) => theme.colors.background};
+  border: 1px solid ${({ theme }) => theme.colors.borderNeutral};
   z-index: 100;
 `;
 
+const MenuPlusLinkContainer = styled.div`
+  display: flex;
+  gap: 80px;
+`;
+
+const MenuPlusLink = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background-color: ${({ theme }) => theme.colors.backgroundNeutral};
+  border-radius: 25%;
+  transition: transform 0.2s ease;
+`;
+
+const MenuPlusIcon = styled.div`
+  width: 32px;
+  height: 32px;
+  color: ${({ theme }) => theme.colors.primary};
+  &:hover {
+    color: ${({ theme }) => theme.colors.highlight};
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const Text = styled.p`
+  font-family: 'Inter', sans-serif;
+  padding: 0 8px;
+  width: 100%;
+  font-weight: bold;
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.secondary};
+`;
+
+const CancelLink = styled(Link)`
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.secondary};
+  text-decoration: none;
+  margin-top: 8px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+  &:active {
+    color: ${({ theme }) => theme.colors.interaction};
+  }
+`;
+
 const MenuPlus = ({ isOpen, closeMenu }) => {
+  const [isVisible, setIsVisible] = useState(false); // Contrôle la visibilité
   const menuRef = useRef(null);
 
+  // Met à jour la visibilité en fonction de `isOpen`
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true); // Rendre visible immédiatement à l'ouverture
+    } else {
+      const timer = setTimeout(() => {
+        setIsVisible(false); // Cache après l'animation
+      }, 300); // Durée identique à la transition
+      return () => clearTimeout(timer); // Nettoyer si le composant se démonte
+    }
+  }, [isOpen]);
+
+  // Ferme le menu si un clic est fait à l'extérieur
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -43,18 +115,34 @@ const MenuPlus = ({ isOpen, closeMenu }) => {
   }, [isOpen, closeMenu]);
 
   return (
-    <MenuPlusContainer ref={menuRef} $isOpen={isOpen}>
-      <ul>
-        <li>
-          <a href="/option1">Option 1</a>
-        </li>
-        <li>
-          <a href="/option2">Option 2</a>
-        </li>
-        <li>
-          <a href="/option3">Option 3</a>
-        </li>
-      </ul>
+    <MenuPlusContainer ref={menuRef} $isOpen={isOpen} $isVisible={isVisible}>
+      <Text>Créer</Text>
+      <MenuPlusLinkContainer>
+        {[
+          { name: 'rocket', icon: RocketIcon, link: '/objectif' },
+          { name: 'notebook', icon: Notebook, link: '/session' },
+        ].map((icon) => (
+          <MenuPlusLink
+            key={icon.name}
+            to={icon.link}
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+            <MenuPlusIcon>
+              <icon.icon />
+            </MenuPlusIcon>
+          </MenuPlusLink>
+        ))}
+      </MenuPlusLinkContainer>
+      <CancelLink
+        to="/dashboard"
+        onClick={() => {
+          closeMenu();
+        }}
+      >
+        Annuler
+      </CancelLink>
     </MenuPlusContainer>
   );
 };

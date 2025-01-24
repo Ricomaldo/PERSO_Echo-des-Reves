@@ -1,65 +1,36 @@
 @use './reset';
-@use './variables/_index' as design;
 
-// .themetoggle {
-//   display: flex;
-//   width: 100%;
-//   justify-content: flex-end;
-// }
-// * {
-//   box-sizing: border-box;
-//   scroll-behavior: smooth;
-// }
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
 
-// html {
-//   overflow-y: scroll; /* Force toujours la barre verticale */
-// }
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
 
-// body {
-//   background-color: design.$bg-dark-color;
+#root {
+  width: 100dvw;
+  height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
 
-//   margin: 0;
-//   padding: 0;
-// }
-// #root {
-//   display: flex;
-//   flex-direction: column;
-//   gap: 32px;
-//   min-height: 812px;
-//   padding: 8px;
-// }
-// main {
-//   flex-grow: 1;
-//   padding-bottom: 64px;
-// }
+header,
+footer {
+  height: 64px;
+  flex-shrink: 0;
+}
 
-// footer {
-//   position: fixed;
-//   bottom: 0;
-//   left: 0;
-//   width: 100%;
-// }
-// a {
-//   text-decoration: none;
-//   color: inherit;
-// }
-
-// h1 {
-//   font-family: design.$font-family-h1;
-//   font-weight: design.$font-weight-h1;
-//   font-size: design.$font-size-h1;
-// }
-
-// h2,
-// h3 {
-//   font-family: design.$font-family-h2;
-//   font-weight: design.$font-weight-h2;
-//   font-size: design.$font-size-h2;
-// }
-// body,
-// p,
-// li {
-//   font-family: design.$font-family-body;
-//   font-weight: design.$font-weight-body;
-//   font-size: design.$font-size-body;
-// }
+main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}

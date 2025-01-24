@@ -11,7 +11,7 @@ const ProfilWrapper = styled.div`
   transition: transform 0.2s ease;
 
   &:hover {
-    transform: scale(1.05); // Effet au survol
+    transform: scale(1.05);
   }
 
   img {
@@ -19,11 +19,31 @@ const ProfilWrapper = styled.div`
     width: 120px;
     height: 120px;
     object-fit: cover;
-    border: 4px solid ${({ theme }) => theme.colors.primary};
+    border: 4px solid ${({ theme }) => theme.colors.secondary};
+    transition: border-color 0.2s ease;
   }
 
   h1 {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.secondary};
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    img {
+      border-color: ${({ theme }) => theme.colors.primary};
+    }
+    h1 {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+
+  &:active {
+    img {
+      border-color: ${({ theme }) => theme.colors.highlight};
+    }
+    h1 {
+      color: ${({ theme }) => theme.colors.highlight};
+    }
   }
 `;
 

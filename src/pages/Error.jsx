@@ -1,12 +1,27 @@
+import Frame from '../layout/Frame';
+import styled from 'styled-components';
+
 import { Link } from 'react-router-dom';
+
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+`;
 
 const Error = () => {
   return (
-    <div className="error">
-      <div className="hero">404</div>
-      <div className="info">Oups! La page que vous demandez n'existe pas.</div>
-      <Link to="/">Retourner sur la page d'accueil</Link>
-    </div>
+    <>
+      <PageTitle title="Error 404" />
+      <Frame>
+        <ErrorContainer>
+          <div className="info">Oups! Il y a une erreur dans l'url...</div>
+          <Link to="/">Retourner sur la page d'accueil</Link>
+        </ErrorContainer>
+      </Frame>
+    </>
   );
 };
 

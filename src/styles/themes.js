@@ -19,14 +19,14 @@ export const colors = {
 export const typography = {
   fontFamilyHeader: "'Pacifico', sans-serif",
   fontFamilyH1: "'Pacifico', sans-serif",
-  fontFamilyH2: "'Caveat', sans-serif",
+  fontFamilyH2: "'Inter', sans-serif",
   fontFamilyBody: "'Caveat', sans-serif",
   fontFamilyNeutral: "'Inter', sans-serif",
 
-  fontSizeHeader: '40px',
-  fontSizeH1: '26px',
+  fontSizeHeader: '24px',
+  fontSizeH1: '24px',
   fontSizeH2: '20px',
-  fontSizeBody: '16px',
+  fontSizeBody: '20px',
 
   fontWeightHeader: '400',
   fontWeightH1: '400',
@@ -50,6 +50,8 @@ export const darkTheme = {
 export const lightTheme = {
   colors: {
     ...colors,
+    interaction: '#0c3434',
+    secondary: '#617bbe',
     background: colors.backgroundLight,
     text: colors.textLight,
     backgroundNeutral: colors.backgroundNeutralLight,

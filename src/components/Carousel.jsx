@@ -13,7 +13,6 @@ const CarouselWrapper = styled.div`
 `;
 
 const QuoteText = styled.div`
-  font-size: 20px;
   text-align: center;
   color: ${({ theme }) => theme.colors.text};
   line-height: 1.5;
@@ -48,11 +47,11 @@ const NavigationButton = styled.button`
 `;
 
 const PreviousButton = styled(NavigationButton)`
-  left: 16px;
+  left: 8px;
 `;
 
 const NextButton = styled(NavigationButton)`
-  right: 16px;
+  right: 8px;
 `;
 
 const ChevronIcon = styled.i`

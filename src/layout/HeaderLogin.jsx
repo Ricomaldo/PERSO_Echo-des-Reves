@@ -8,23 +8,23 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.background};
-  padding: 16px;
-  height: 72px;
-  max-width: 375px;
+  width: 100%;
+  border: solid 2px ${({ theme }) => theme.colors.borderNeutral};
+  border-radius: 16px;
+  padding: 8px;
 `;
 
 const HeaderLogo = styled.img`
-  height: 64px;
-  width: 64px;
+  height: 48px;
+  width: 48px;
 `;
-
 const HeaderTitle = styled.div`
-  font-family: ${({ theme }) => theme.typography.fontFamilyHeader};
-  font-weight: ${({ theme }) => theme.typography.fontWeightHeader};
   font-size: ${({ theme }) => theme.typography.fontSizeHeader};
-  color: ${({ theme }) => theme.colors.primary};
-  width: 100%;
   text-align: center;
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: ${({ theme }) => theme.typography.fontWeightHeader};
+  font-family: ${({ theme }) => theme.typography.fontFamilyHeader};
+  width: 100%;
 `;
 
 const Header = () => {

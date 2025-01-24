@@ -22,7 +22,7 @@ const InputWrapper = styled.div`
     border: 1px solid ${({ theme }) => theme.colors.borderNeutral};
     border-radius: 8px;
     padding: 8px;
-    font-family: 'caveat', sans-serif;
+    font-family: 'Caveat', sans-serif;
     font-size: 20px;
 
     &:focus {
@@ -44,25 +44,25 @@ const ButtonWrapper = styled.div`
   gap: 8px;
 `;
 
-const ObjectifForm = () => (
+const SessionForm = () => (
   <Frame>
     <InputWrapper>
-      <label htmlFor="title">Titre :</label>
-      <input id="title" placeholder="Un titre qui nous inspire..." />
+      <label htmlFor="date">Date :</label>
+      <input id="date" placeholder="À quelle date cette session a lieu ?" />
     </InputWrapper>
     <InputWrapper>
-      <label htmlFor="description">Description :</label>
+      <label htmlFor="notes">Prise de note :</label>
       <textarea
-        id="description"
-        placeholder="Qu'est-ce qui rend cet objectif motivant ? Pourquoi c'est une priorité ? "
+        id="notes"
+        placeholder="Note ici les points essentiels de cet échange : les idées marquantes, les objectifs évoqués, les besoins ou attentes exprimées, ainsi que les actions concrètes envisagées. Identifie les obstacles ou freins, les émotions, et les moments de clarté ou de confusion. Capture les ressources ou atouts identifiéed, les engagements pris, et les solutions ou pistes qui sont explorées."
         style={{ minHeight: '320px' }}
       />
     </InputWrapper>
     <InputWrapper>
-      <label htmlFor="deadline">Deadline :</label>
+      <label htmlFor="vigilance">Vigilance :</label>
       <input
-        id="deadline"
-        placeholder="À quelle date cet objectif sera atteint ?"
+        id="vigilance"
+        placeholder="Qu'est-ce qui mérite toute ton attention ?"
       />
     </InputWrapper>
     <ButtonWrapper>
@@ -73,4 +73,4 @@ const ObjectifForm = () => (
   </Frame>
 );
 
-export default ObjectifForm;
+export default SessionForm;

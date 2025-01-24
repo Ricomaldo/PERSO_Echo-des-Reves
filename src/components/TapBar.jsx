@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import HomeIcon from '@assets/icons/home.svg?react';
 import RocketIcon from '@assets/icons/rocket.svg?react';
@@ -12,26 +13,37 @@ const TapBarContainer = styled.nav`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   padding: 8px;
   position: relative;
   z-index: 50;
+  border: solid 2px ${({ theme }) => theme.colors.borderNeutral};
+  border-radius: 16px;
 `;
 
-const TapBarLink = styled(NavLink)`
-  height: 64px;
-  width: 64px;
+const TapBarLink = styled(Link)`
+  height: 60px;
+  width: 60px;
+  display: grid;
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg-neutral-color);
+  background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border-radius: 25%;
+  &:hover {
+    color: ${({ theme }) => theme.colors.highlight};
+  }
 `;
 
 const TapBarIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  color: var(--primary-color);
-  display: inline-block;
+  width: 40px;
+  height: 40px;
+  color: ${({ $location, $link, theme }) =>
+    $location === $link ? theme.colors.highlight : theme.colors.primary};
+  &:hover {
+    color: ${({ theme }) => theme.colors.highlight};
+  }
   svg {
     width: 100%;
     height: 100%;
@@ -39,12 +51,12 @@ const TapBarIcon = styled.div`
 `;
 
 const MenuPlusButton = styled.button`
-  height: 64px;
-  width: 64px;
+  height: 60px;
+  width: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg-neutral-color);
+  background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border-radius: 25%;
   border: none;
   cursor: pointer;
@@ -58,6 +70,7 @@ const TapBar = ({ isMenuPlusOpen, toggleMenuPlus }) => {
     { name: 'calendar', icon: CalendarIcon, link: '/calendrier' },
     { name: 'settings', icon: SettingsIcon, link: '/settings' },
   ];
+  const location = useLocation();
 
   return (
     <>
@@ -65,13 +78,13 @@ const TapBar = ({ isMenuPlusOpen, toggleMenuPlus }) => {
         {icons.map((icon) =>
           icon.action ? (
             <MenuPlusButton key={icon.name} onClick={icon.action}>
-              <TapBarIcon>
+              <TapBarIcon $location={location.pathname} $link={icon.link}>
                 <icon.icon alt={icon.name} />
               </TapBarIcon>
             </MenuPlusButton>
           ) : (
             <TapBarLink key={icon.name} to={icon.link}>
-              <TapBarIcon>
+              <TapBarIcon $location={location.pathname} $link={icon.link}>
                 <icon.icon alt={icon.name} />
               </TapBarIcon>
             </TapBarLink>
