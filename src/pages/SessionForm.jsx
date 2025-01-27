@@ -55,7 +55,7 @@ const SessionForm = () => (
       <textarea
         id="notes"
         placeholder="Note ici les points essentiels de cet échange : les idées marquantes, les objectifs évoqués, les besoins ou attentes exprimées, ainsi que les actions concrètes envisagées. Identifie les obstacles ou freins, les émotions, et les moments de clarté ou de confusion. Capture les ressources ou atouts identifiéed, les engagements pris, et les solutions ou pistes qui sont explorées."
-        style={{ minHeight: '320px' }}
+        style={{ minHeight: '300px' }}
       />
     </InputWrapper>
     <InputWrapper>

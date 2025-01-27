@@ -68,7 +68,7 @@ const Collapse = ({ title, children }) => {
     <CollapseContainer>
       <CollapseHeader onClick={ToggleCollapse} $isOpen={isOpen}>
         <h2>{title}</h2>
-        <ArrowIcon isOpen={isOpen} className="fa fa-chevron-down"></ArrowIcon>
+        <ArrowIcon $isOpen={isOpen} className="fa fa-chevron-down"></ArrowIcon>
       </CollapseHeader>
 
       <CollapseContent

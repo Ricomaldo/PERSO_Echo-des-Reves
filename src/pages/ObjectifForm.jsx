@@ -55,7 +55,7 @@ const ObjectifForm = () => (
       <textarea
         id="description"
         placeholder="Qu'est-ce qui rend cet objectif motivant ? Pourquoi c'est une priorité ? "
-        style={{ minHeight: '320px' }}
+        style={{ minHeight: '300px' }}
       />
     </InputWrapper>
     <InputWrapper>

@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
+import app from './utils/firebaseConfig';
 
 import Header from './layout/Header';
 import HeaderLogin from './layout/HeaderLogin';
@@ -12,6 +13,9 @@ import ObjectifForm from './pages/ObjectifForm';
 import SessionForm from './pages/SessionForm';
 import Error from './pages/Error';
 import ObjectifsOverview from './pages/ObjectifsOverview';
+import Adventure from './adventure/Adventure';
+
+console.log('Connexion établie avec Firebase :', app);
 
 function App() {
   const location = useLocation();
@@ -24,6 +28,7 @@ function App() {
     '/settings': 'Configuration',
     '/objectif': 'Nouvel Objectif',
     '/session': 'Nouvelle Session',
+    '/Adventure': 'Mission',
     '*': 'Erreur',
   };
   const pageTitle = pages[location.pathname] || 'Page inconnue';
@@ -39,6 +44,7 @@ function App() {
           <Route path="/settings" element={<Configuration />} />
           <Route path="/objectif" element={<ObjectifForm />} />
           <Route path="/session" element={<SessionForm />} />
+          <Route path="/Adventure" element={<Adventure />} />
           <Route path="*" element={<Error />} />
         </Routes>
       </main>

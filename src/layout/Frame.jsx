@@ -6,7 +6,7 @@ const FrameContainer = styled.div`
   justify-content: space-between;
   border-radius: 16px;
   background-color: ${({ theme }) => theme.colors.background};
-  border: 2px solid ${({ theme }) => theme.colors.highlight};
+  border: 2px dashed ${({ theme }) => theme.colors.highlight};
 
   min-height: 320px;
   width: 100%;

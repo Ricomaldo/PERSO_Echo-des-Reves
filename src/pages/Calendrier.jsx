@@ -4,9 +4,5 @@ import users from '../utils/users';
 import styled from 'styled-components';
 import Frame from '../layout/Frame';
 
-const Calendrier = () => (
-  <>
-    <Frame></Frame>
-  </>
-);
+const Calendrier = () => <>{/* <Frame></Frame> */}</>;
 export default Calendrier;
