@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+import Frame from "../layout/Frame";
 
 const MissionHubContainer = styled.div`
   display: flex;
@@ -35,6 +36,6 @@ const MissionHubContainer = styled.div`
 `;
 
 const MissionHub = ({ children }) => {
-  return <MissionHubContainer>{children}</MissionHubContainer>;
+  return <Frame><MissionHubContainer>{children}</MissionHubContainer></Frame>
 };
 export default MissionHub;

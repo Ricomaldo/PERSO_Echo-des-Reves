@@ -8,8 +8,7 @@ const FrameContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.background};
   border: 2px dashed ${({ theme }) => theme.colors.highlight};
 
-  min-height: 320px;
-  width: 100%;
+  // min-height: 320px;
   padding: 16px;
 
   gap: 16px;

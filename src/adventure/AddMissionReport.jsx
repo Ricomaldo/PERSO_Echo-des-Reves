@@ -24,7 +24,7 @@ function AddMissionReport() {
   return (
     <>
       <p>+++++ Ajoute un compte-rendu des missions critiques, ici. +++++</p>
-      <button onClick={ajouterCompteRendu}>Ajouter un compte-rendu</button>
+      <button onClick={ajouterCompteRendu} disabled>Ajouter un compte-rendu</button>
     </>
   );
 }
