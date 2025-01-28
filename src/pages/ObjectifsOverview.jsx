@@ -4,10 +4,20 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
 import ProgressBar from '../components/ProgressBar';
 import Collapse from '../components/Collapse';
+import Button from '../components/Button';
+import styled from 'styled-components';
+
 import { useNavigate } from 'react-router-dom';
 
+const ButtonWrapper = styled.div`
+  margin: auto;
+  gap: 8px;
+  width: 50%;
+`;
+
 function ObjectifsOverview() {
-  const [objectifs, setObjectifs] = useState([]);
+  const [objectifs, setObjectifs] = useState([]); // Objectifs en cours
+  const [completedObjectifs, setCompletedObjectifs] = useState([]); // Objectifs terminés
   const { activeUser } = useUser();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,23 +32,41 @@ function ObjectifsOverview() {
         }
 
         const objectifsCollectionRef = collection(db, 'Objectifs');
-        const queryRef = query(
+
+        // Requête pour les objectifs en cours (progression < 100)
+        const queryInProgress = query(
           objectifsCollectionRef,
           where('participant', '==', activeUser.name),
           where('progression', '<', 100)
         );
-        const querySnapshot = await getDocs(queryRef);
 
-        if (querySnapshot.empty) {
-          setObjectifs([]);
-          console.log(`Aucun objectif en cours pour ${activeUser.name}.`);
-        } else {
-          const objectifs = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setObjectifs(objectifs);
-        }
+        // Requête pour les objectifs terminés (progression === 100)
+        const queryCompleted = query(
+          objectifsCollectionRef,
+          where('participant', '==', activeUser.name),
+          where('progression', '==', 100)
+        );
+
+        // Exécuter les deux requêtes en parallèle
+        const [inProgressSnapshot, completedSnapshot] = await Promise.all([
+          getDocs(queryInProgress),
+          getDocs(queryCompleted),
+        ]);
+
+        // Traiter les résultats des objectifs en cours
+        const inProgressObjectifs = inProgressSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        // Traiter les résultats des objectifs terminés
+        const completedObjectifs = completedSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setObjectifs(inProgressObjectifs);
+        setCompletedObjectifs(completedObjectifs);
       } catch (e) {
         console.error('Erreur lors de la récupération des objectifs :', e);
       } finally {
@@ -58,10 +86,23 @@ function ObjectifsOverview() {
       )
     );
   };
+
   const navigate = useNavigate(); // Initialiser le hook pour naviguer
 
   const handleSelectObjectif = (objectif) => {
     navigate(`/objectif/${objectif.id}`); // Naviguer vers la route avec l'ID de l'objectif
+  };
+
+  const handleDeleteObjectif = async (objectifId) => {
+    try {
+      await deleteDoc(collection(db, 'Objectifs').doc(objectifId)); // Suppression du document
+      setObjectifs((prevObjectifs) =>
+        prevObjectifs.filter((objectif) => objectif.id !== objectifId)
+      ); // Met à jour la liste des objectifs localement
+      console.log('Objectif supprimé avec succès.');
+    } catch (e) {
+      console.error('Erreur lors de la suppression :', e);
+    }
   };
   return (
     <>
@@ -103,27 +144,55 @@ function ObjectifsOverview() {
                     year: 'numeric',
                   })}
                 </p>
-                <button
-                  style={{
-                    background: '#017374',
-                    color: '#fff',
-                    padding: '8px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    border: 'none',
-                  }}
-                  onClick={() => handleSelectObjectif(objectif)}
-                >
-                  Modifier
-                </button>
+                <ButtonWrapper>
+                  <Button
+                    $variant="delete" // Applique la variante 'delete'
+                    onClick={() => handleDeleteObjectif(objectif.id)} // Garde le même comportement
+                  >
+                    Supprimer
+                  </Button>{' '}
+                  <Button
+                    $variant="primary" // Applique la variante 'primary'
+                    onClick={() => handleSelectObjectif(objectif)} // Garde le même comportement
+                  >
+                    Modifier
+                  </Button>
+                </ButtonWrapper>
               </Collapse>
             </li>
           ))}
         </ul>
       )}
 
-      <Collapse title="Dernière session">
-        <p>Lorem Elsass ipsum Spätzle rucksack et bredele</p>
+      {/* Collapse des objectifs terminés */}
+      <Collapse title={`Objectifs terminés `}>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {completedObjectifs.map((objectif) => (
+            <li
+              key={objectif.id}
+              style={{
+                marginBottom: '8px',
+                padding: '4px',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+              }}
+              onClick={() => handleSelectObjectif(objectif)}
+            >
+              <strong>{objectif.titre}</strong> –{' '}
+              {new Date(objectif.deadline.seconds * 1000).toLocaleDateString(
+                'fr-FR',
+                {
+                  month: 'short',
+                  year: 'numeric',
+                }
+              )}
+            </li>
+          ))}
+        </ul>{' '}
+        <p>
+          {completedObjectifs.length} objectifs ont été atteints par{' '}
+          {activeUser?.name || 'cet utilisateur'}.
+        </p>
       </Collapse>
     </>
   );

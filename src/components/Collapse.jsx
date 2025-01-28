@@ -10,7 +10,7 @@ const CollapseHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  height: 40px;
+  min-height: 40px;
   cursor: pointer;
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 8px 8px 0 0;

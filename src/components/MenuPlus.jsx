@@ -132,7 +132,8 @@ const MenuPlus = ({ isOpen, closeMenu }) => {
       name: 'notebook',
       icon: Notebook,
       action: () => {
-        navigate('/session'); // Navigue vers /session
+        const newId = crypto.randomUUID(); // Génère un nouvel ID unique
+        navigate(`/session/${newId}`); // Navigue vers /objectif/:id
         closeMenu(); // Ferme le menu après clic
       },
     },

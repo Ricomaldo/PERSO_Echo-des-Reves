@@ -1,11 +1,12 @@
 import { styled } from 'styled-components';
-import Frame from "../layout/Frame";
+import Frame from '../layout/Frame';
 
 const MissionHubContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 8px 0;
   gap: 32px;
+  z-index: 10;
   h1 {
     color: #00ff00;
     font-size: 20px;
@@ -36,6 +37,10 @@ const MissionHubContainer = styled.div`
 `;
 
 const MissionHub = ({ children }) => {
-  return <Frame><MissionHubContainer>{children}</MissionHubContainer></Frame>
+  return (
+    <Frame>
+      <MissionHubContainer>{children}</MissionHubContainer>
+    </Frame>
+  );
 };
 export default MissionHub;

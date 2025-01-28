@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Frame from '../layout/Frame';
 import Button from '../components/Button';
 import { db } from '../utils/firebaseConfig';
+import { useUser } from '../utils/contexts/UserProvider'; // Import du UserProvider
 
 const InputWrapper = styled.div`
   display: flex;
@@ -42,6 +43,7 @@ const InputWrapper = styled.div`
     height: 100px;
     resize: none;
   }
+
   .react-datepicker-popper {
     z-index: 1050; /* Plus élevé que ton menu ou autre contenu */
   }
@@ -56,8 +58,9 @@ const ButtonWrapper = styled.div`
 const ObjectifForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { activeUser } = useUser(); // Récupère l'utilisateur actif
   const [objectif, setObjectif] = useState({
-    title: '',
+    titre: '',
     description: '',
     deadline: null, // La deadline est maintenant un objet Date
   });
@@ -109,6 +112,7 @@ const ObjectifForm = () => {
       const payload = {
         ...objectif,
         deadline: objectif.deadline ? new Date(objectif.deadline) : null, // Convertir en Timestamp Firestore
+        participant: activeUser.name, // Ajoute le participant actif
       };
       await setDoc(docRef, payload);
       navigate('/dashboard');
@@ -133,7 +137,7 @@ const ObjectifForm = () => {
       <InputWrapper>
         <label htmlFor="title">Titre :</label>
         <input
-          id="title"
+          id="titre"
           value={objectif.titre}
           onChange={handleChange}
           placeholder="Un titre qui nous inspire..."
