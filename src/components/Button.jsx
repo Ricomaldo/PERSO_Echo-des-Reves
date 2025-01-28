@@ -5,22 +5,22 @@ const StyledButton = styled.button`
   padding: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: ${({ theme, variant }) =>
-    variant === 'secondary'
+  color: ${({ theme, $variant }) =>
+    $variant === 'secondary'
       ? theme.colors.secondary
-      : variant === 'delete'
+      : $variant === 'delete'
       ? '#600000'
       : theme.colors.text};
-  background-color: ${({ theme, variant }) =>
-    variant === 'primary'
+  background-color: ${({ theme, $variant }) =>
+    $variant === 'primary'
       ? theme.colors.primary
-      : variant === 'delete'
+      : $variant === 'delete'
       ? theme.colors.background
       : theme.colors.background};
-  border: ${({ theme, variant }) =>
-    variant === 'secondary'
+  border: ${({ theme, $variant }) =>
+    $variant === 'secondary'
       ? `1px solid ${theme.colors.secondary}`
-      : variant === 'delete'
+      : $variant === 'delete'
       ? '1px solid #600000'
       : 'none'};
   border-radius: 24px;
@@ -28,34 +28,34 @@ const StyledButton = styled.button`
   transition: background-color 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background-color: ${({ theme, variant }) =>
-      variant === 'primary'
+    background-color: ${({ theme, $variant }) =>
+      $variant === 'primary'
         ? theme.colors.interaction
-        : variant === 'secondary'
+        : $variant === 'secondary'
         ? theme.colors.backgroundNeutral
         : '#ffcccc'};
-    color: ${({ theme, variant }) =>
-      variant === 'secondary' || variant === 'delete'
+    color: ${({ theme, $variant }) =>
+      $variant === 'secondary' || $variant === 'delete'
         ? theme.colors.primary
         : theme.colors.textHighlight};
   }
 
   &:active {
-    background-color: ${({ theme, variant }) =>
-      variant === 'primary'
+    background-color: ${({ theme, $variant }) =>
+      $variant === 'primary'
         ? theme.colors.highlight
-        : variant === 'secondary'
+        : $variant === 'secondary'
         ? theme.colors.background
         : '#cc0000'};
-    color: ${({ theme, variant }) =>
-      variant === 'delete' ? '#ffffff' : theme.colors.text};
+    color: ${({ theme, $variant }) =>
+      $variant === 'delete' ? '#ffffff' : theme.colors.text};
     opacity: 0.8;
   }
 `;
 
-const Button = ({ children, variant = 'primary', onClick }) => {
+const Button = ({ children, $variant = 'primary', onClick }) => {
   return (
-    <StyledButton variant={variant} onClick={onClick}>
+    <StyledButton $variant={$variant} onClick={onClick}>
       {children}
     </StyledButton>
   );

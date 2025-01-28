@@ -14,7 +14,6 @@ const ErrorContainer = styled.div`
 const Error = () => {
   return (
     <>
-      <PageTitle title="Error 404" />
       <Frame>
         <ErrorContainer>
           <div className="info">Oups! Il y a une erreur dans l'url...</div>

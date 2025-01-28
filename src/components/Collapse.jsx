@@ -21,30 +21,30 @@ const CollapseHeader = styled.div`
 `;
 
 const CollapseContent = styled.div`
-  max-height: ${({ maxHeight }) => `${maxHeight}px`};
+  max-height: ${({ $maxHeight }) => `${$maxHeight}px`};
   overflow: hidden;
-  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
+  opacity: ${({ $isOpen }) => ($isOpen ? '1' : '0')};
   transition: max-height 0.4s ease, opacity 0.3s ease;
   line-height: 1.5;
   background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border-radius: 0 0 8px 8px;
   border: solid 2px ${({ theme }) => theme.colors.borderNeutral};
   border-top: none;
-  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
+  visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
 `;
 
 const CollapseText = styled.div`
-  padding: ${({ isOpen }) => (isOpen ? '16px' : '0 16px')};
-  transform: ${({ isOpen }) =>
-    isOpen ? 'translateY(0)' : 'translateY(-20px)'};
-  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
+  padding: ${({ $isOpen }) => ($isOpen ? '8px' : '0 8px')};
+  transform: ${({ $isOpen }) =>
+    $isOpen ? 'translateY(0)' : 'translateY(-20px)'};
+  opacity: ${({ $isOpen }) => ($isOpen ? '1' : '0')};
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 `;
 
 const ArrowIcon = styled.i`
   transition: transform 0.4s ease-in-out;
   transform-origin: center;
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(-180deg)' : 'rotate(0deg)')};
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(-180deg)' : 'rotate(0deg)')};
 `;
 
 const Collapse = ({ title, children }) => {
@@ -54,11 +54,11 @@ const Collapse = ({ title, children }) => {
 
   useEffect(() => {
     if (isOpen && contentRef.current) {
-      setMaxHeight(contentRef.current.scrollHeight); // Hauteur réelle
+      setMaxHeight(contentRef.current.scrollHeight); // Recalcule la hauteur si ouvert
     } else {
-      setMaxHeight(0); // Hauteur fermée
+      setMaxHeight(0); // Réinitialise à 0 si fermé
     }
-  }, [isOpen]); // Recalcule chaque fois que `isOpen` change
+  }, [isOpen, children]); // Recalcule aussi si `children` change
 
   const ToggleCollapse = () => {
     setIsOpen((prev) => !prev);
@@ -73,10 +73,10 @@ const Collapse = ({ title, children }) => {
 
       <CollapseContent
         ref={contentRef}
-        isOpen={isOpen}
-        maxHeight={maxHeight} // Hauteur dynamique
+        $isOpen={isOpen}
+        $maxHeight={maxHeight} // Hauteur dynamique
       >
-        <CollapseText isOpen={isOpen}>{children}</CollapseText>
+        <CollapseText $isOpen={isOpen}>{children}</CollapseText>
       </CollapseContent>
     </CollapseContainer>
   );

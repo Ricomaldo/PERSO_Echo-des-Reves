@@ -20,17 +20,20 @@ export const typography = {
   fontFamilyHeader: "'Pacifico', sans-serif",
   fontFamilyH1: "'Pacifico', sans-serif",
   fontFamilyH2: "'Inter', sans-serif",
+  fontFamilyH3: "'Inter', sans-serif",
   fontFamilyBody: "'Caveat', sans-serif",
-  fontFamilyNeutral: "'Inter', sans-serif",
+  fontFamilyNeutral: "'Caveat', sans-serif",
 
   fontSizeHeader: '24px',
   fontSizeH1: '24px',
   fontSizeH2: '20px',
+  fontSizeH3: '16px',
   fontSizeBody: '20px',
 
   fontWeightHeader: '400',
   fontWeightH1: '400',
   fontWeightH2: '400',
+  fontWeightH3: '600',
   fontWeightBody: '400',
 };
 

@@ -23,11 +23,20 @@ const StyledGlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.highlight || '#000000'};
   }
 
-  h2, h3 {
+  h2{
     font-family: ${({ theme }) =>
       theme.typography.fontFamilyH2 || 'Inter, sans-serif'};
     font-weight: ${({ theme }) => theme.typography.fontWeightH2 || '400'};
     font-size: ${({ theme }) => theme.typography.fontSizeH2 || '20px'};
+        color: ${({ theme }) => theme.colors.text || '#ededed'};
+
+  }
+
+   h3 {
+    font-family: ${({ theme }) =>
+      theme.typography.fontFamilyH3 || 'Pacifico, sans-serif'};
+    font-weight: ${({ theme }) => theme.typography.fontWeightH3 || '400'};
+    font-size: ${({ theme }) => theme.typography.fontSizeH3 || '20px'};
         color: ${({ theme }) => theme.colors.text || '#ededed'};
 
   }

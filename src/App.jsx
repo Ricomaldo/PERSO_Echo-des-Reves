@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useParams } from 'react-router-dom';
 import app from './utils/firebaseConfig';
 
 import Header from './layout/Header';
@@ -19,22 +19,37 @@ console.log('Connexion établie avec Firebase :', app);
 
 function App() {
   const location = useLocation();
+  const params = useParams(); // Récupère les paramètres dynamiques (si présents)
   const isLoginPage = location.pathname === '/';
+
+  // Définir des titres par défaut pour chaque page
   const pages = {
     '/': 'Page de Connexion',
     '/dashboard': 'Tableau de Bord',
     '/objectifs': 'Résumé des Objectifs',
     '/calendrier': 'Calendrier',
     '/settings': 'Configuration',
-    '/objectif': 'Nouvel Objectif',
-    '/session': 'Nouvelle Session',
     '/Adventure': 'Mission',
     '*': 'Erreur',
   };
-  const pageTitle = pages[location.pathname] || 'Page inconnue';
+
+  // Gérer les titres dynamiques pour les pages avec paramètres
+  let pageTitle;
+
+  if (location.pathname.startsWith('/objectif/')) {
+    pageTitle = "Focus sur l'objectif";
+  } else if (location.pathname.startsWith('/session')) {
+    pageTitle = params.id
+      ? `Modifier Session ${params.id}`
+      : 'Nouvelle Session';
+  } else {
+    // Pour les autres pages, récupérer le titre par défaut
+    pageTitle = pages[location.pathname] || 'Page inconnue';
+  }
+
   return (
     <>
-      {isLoginPage ? <HeaderLogin title="" /> : <Header title={pageTitle} />}{' '}
+      {isLoginPage ? <HeaderLogin title="" /> : <Header title={pageTitle} />}
       <main className="content">
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -42,8 +57,8 @@ function App() {
           <Route path="/objectifs" element={<ObjectifsOverview />} />
           <Route path="/calendrier" element={<Calendrier />} />
           <Route path="/settings" element={<Configuration />} />
-          <Route path="/objectif" element={<ObjectifForm />} />
-          <Route path="/session" element={<SessionForm />} />
+          <Route path="/objectif/:id" element={<ObjectifForm />} />
+          <Route path="/session/:id" element={<SessionForm />} />
           <Route path="/Adventure" element={<Adventure />} />
           <Route path="*" element={<Error />} />
         </Routes>

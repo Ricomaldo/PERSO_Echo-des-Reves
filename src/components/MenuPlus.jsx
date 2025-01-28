@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import RocketIcon from '@assets/icons/rocket.svg?react';
@@ -28,7 +28,7 @@ const MenuPlusLinkContainer = styled.div`
   gap: 80px;
 `;
 
-const MenuPlusLink = styled(Link)`
+const MenuPlusLink = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,6 +37,8 @@ const MenuPlusLink = styled(Link)`
   height: 64px;
   background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border-radius: 25%;
+  border: none;
+  cursor: pointer;
   transition: transform 0.2s ease;
 `;
 
@@ -82,6 +84,7 @@ const CancelLink = styled(Link)`
 const MenuPlus = ({ isOpen, closeMenu }) => {
   const [isVisible, setIsVisible] = useState(false); // Contrôle la visibilité
   const menuRef = useRef(null);
+  const navigate = useNavigate(); // Pour navigation dynamique
 
   // Met à jour la visibilité en fonction de `isOpen`
   useEffect(() => {
@@ -114,23 +117,38 @@ const MenuPlus = ({ isOpen, closeMenu }) => {
     };
   }, [isOpen, closeMenu]);
 
+  // Actions pour chaque bouton
+  const actions = [
+    {
+      name: 'rocket',
+      icon: RocketIcon,
+      action: () => {
+        const newId = crypto.randomUUID(); // Génère un nouvel ID unique
+        navigate(`/objectif/${newId}`); // Navigue vers /objectif/:id
+        closeMenu(); // Ferme le menu après clic
+      },
+    },
+    {
+      name: 'notebook',
+      icon: Notebook,
+      action: () => {
+        navigate('/session'); // Navigue vers /session
+        closeMenu(); // Ferme le menu après clic
+      },
+    },
+  ];
+
   return (
     <MenuPlusContainer ref={menuRef} $isOpen={isOpen} $isVisible={isVisible}>
       <Text>Créer</Text>
       <MenuPlusLinkContainer>
-        {[
-          { name: 'rocket', icon: RocketIcon, link: '/objectif' },
-          { name: 'notebook', icon: Notebook, link: '/session' },
-        ].map((icon) => (
+        {actions.map((item) => (
           <MenuPlusLink
-            key={icon.name}
-            to={icon.link}
-            onClick={() => {
-              closeMenu();
-            }}
+            key={item.name}
+            onClick={item.action} // Exécute l'action associée
           >
             <MenuPlusIcon>
-              <icon.icon />
+              <item.icon />
             </MenuPlusIcon>
           </MenuPlusLink>
         ))}

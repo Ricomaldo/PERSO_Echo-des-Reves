@@ -1,37 +1,127 @@
+import React, { useEffect, useState } from 'react';
 import { useUser } from '../utils/contexts/UserProvider';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../utils/firebaseConfig';
+import ProgressBar from '../components/ProgressBar';
 import Collapse from '../components/Collapse';
+import { useNavigate } from 'react-router-dom';
 
-const Dashboard = () => (
-  <>
-    <Collapse title="Objectifs en cours">
-      <ul>
-        <li>Objectif 1 : Faire de la marche</li>
-        <li>Objectif 2 : Fumer moins</li>
-        <li>Objectif 3 : Pratiquer le Tai-Chi</li>
-      </ul>
-    </Collapse>
-    <Collapse title="Dernière session">
-      <p>
-        Lorem Elsass ipsum Spätzle rucksack et bredele non turpis sed habitant
-        tchao bissame merci vielmols suspendisse leo picon bière météor ante
-        Richard Schirmeck quam. ftomi! schnaps sagittis Carola dui ac vielmols,
-        tellus turpis, pellentesque Mauris baeckeoffe hopla tristique schpeck
-        morbi Gal. réchime hopla sed nullam Salut bisamme wurscht wie id varius
-        so Racing. Huguette Verdammi bissame sit Salu bissame libero,
-        Kabinetpapier nüdle dolor messti de Bischheim in, Miss Dahlias
-        kartoffelsalad sit hopla gal Strasbourg commodo libero, Gal ! sit Hans
-        semper tellus hop mänele ornare non auctor, barapli amet vulputate amet
-        Oberschaeffolsheim condimentum kougelhopf libero. Chulia Roberstau
-        Coopé de Truchtersheim ornare amet, id, mamsell kuglopf quam, senectus
-        knack blottkopf, und gewurztraminer eget mollis Christkindelsmärik
-        chambon Heineken jetz gehts los placerat ac elementum dignissim
-        Wurschtsalad purus geïz consectetur geht's adipiscing Yo dû.
-        Oberschaeffolsheim leverwurscht porta salu hopla hoplageiss flammekueche
-        aliquam DNA, schneck leo Morbi munster eleifend yeuh. ullamcorper ch'ai
-        lacus risus, Pfourtz ! lotto-owe elit Chulien Pellentesque gravida
-        knepfle rossbolla s'guelt rhoncus{' '}
-      </p>
-    </Collapse>
-  </>
-);
+function Dashboard() {
+  const [objectifs, setObjectifs] = useState([]);
+  const { activeUser } = useUser();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchObjectifs = async () => {
+      try {
+        setIsLoading(true); // Indique que le chargement commence
+        if (!activeUser || !activeUser.name) {
+          console.log('Utilisateur actif non défini ou sans nom.');
+          setIsLoading(false); // Arrête le chargement si pas d'utilisateur
+          return;
+        }
+
+        const objectifsCollectionRef = collection(db, 'Objectifs');
+        const queryRef = query(
+          objectifsCollectionRef,
+          where('participant', '==', activeUser.name),
+          where('progression', '<', 100)
+        );
+        const querySnapshot = await getDocs(queryRef);
+
+        if (querySnapshot.empty) {
+          setObjectifs([]);
+          console.log(`Aucun objectif en cours pour ${activeUser.name}.`);
+        } else {
+          const objectifs = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setObjectifs(objectifs);
+        }
+      } catch (e) {
+        console.error('Erreur lors de la récupération des objectifs :', e);
+      } finally {
+        setIsLoading(false); // Indique que le chargement est terminé
+      }
+    };
+
+    fetchObjectifs();
+  }, [activeUser]);
+
+  const handleProgressionChange = (objectifId, newProgression) => {
+    setObjectifs((prevObjectifs) =>
+      prevObjectifs.map((objectif) =>
+        objectif.id === objectifId
+          ? { ...objectif, progression: newProgression }
+          : objectif
+      )
+    );
+  };
+  const navigate = useNavigate(); // Initialiser le hook pour naviguer
+
+  const handleSelectObjectif = (objectif) => {
+    navigate(`/objectif/${objectif.id}`); // Naviguer vers la route avec l'ID de l'objectif
+  };
+  return (
+    <>
+      <Collapse title={`Objectifs pour ${activeUser?.name || ''}`}>
+        {isLoading ? (
+          <p>Chargement des objectifs...</p>
+        ) : objectifs.length === 0 ? (
+          <p>
+            Aucun objectif en cours pour {activeUser?.name || 'cet utilisateur'}
+            .
+          </p>
+        ) : (
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {objectifs.map((objectif) => (
+              <li
+                key={objectif.id}
+                style={{
+                  marginBottom: '16px',
+                  border: '2px solid #222627',
+                  padding: '4px',
+                  borderRadius: '4px',
+                }}
+                // onClick={() => handleSelectObjectif(objectif)}
+              >
+                <h3 style={{ marginBottom: '8px' }}>{objectif.titre}</h3>
+                {/* <p style={{ marginBottom: '8px', textAlign: 'left' }}>
+                  {objectif.description}
+                </p> */}
+                <ProgressBar
+                  objectifId={objectif.id} // Passe l'id de l'objectif
+                  progression={objectif.progression} // Passe la progression actuelle
+                  onProgressionChange={handleProgressionChange} // Passe la fonction de mise à jour
+                />
+
+                {/* <p
+                  style={{
+                    fontSize: '0.9em',
+                    color: '#555',
+                    marginBottom: '16px',
+                  }}
+                >
+                  Échéance :{' '}
+                  {new Date(
+                    objectif.deadline.seconds * 1000
+                  ).toLocaleDateString('fr-FR', {
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </p> */}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Collapse>
+
+      <Collapse title="Dernière session">
+        <p>Lorem Elsass ipsum Spätzle rucksack et bredele</p>
+      </Collapse>
+    </>
+  );
+}
+
 export default Dashboard;

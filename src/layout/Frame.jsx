@@ -10,7 +10,7 @@ const FrameContainer = styled.div`
 
   // min-height: 320px;
   padding: 16px;
-
+  width: 100%;
   gap: 16px;
 `;
 

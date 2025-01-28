@@ -1,6 +1,12 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import styled from 'styled-components';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Frame from '../layout/Frame';
 import Button from '../components/Button';
+import { db } from '../utils/firebaseConfig';
 
 const InputWrapper = styled.div`
   display: flex;
@@ -36,6 +42,9 @@ const InputWrapper = styled.div`
     height: 100px;
     resize: none;
   }
+  .react-datepicker-popper {
+    z-index: 1050; /* Plus élevé que ton menu ou autre contenu */
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -44,33 +53,126 @@ const ButtonWrapper = styled.div`
   gap: 8px;
 `;
 
-const ObjectifForm = () => (
-  <Frame>
-    <InputWrapper>
-      <label htmlFor="title">Titre :</label>
-      <input id="title" placeholder="Un titre qui nous inspire..." />
-    </InputWrapper>
-    <InputWrapper>
-      <label htmlFor="description">Description :</label>
-      <textarea
-        id="description"
-        placeholder="Qu'est-ce qui rend cet objectif motivant ? Pourquoi c'est une priorité ? "
-        style={{ minHeight: '300px' }}
-      />
-    </InputWrapper>
-    <InputWrapper>
-      <label htmlFor="deadline">Deadline :</label>
-      <input
-        id="deadline"
-        placeholder="À quelle date cet objectif sera atteint ?"
-      />
-    </InputWrapper>
-    <ButtonWrapper>
-      <Button variant="primary">Sauvegarder</Button>
-      <Button variant="secondary">Annuler</Button>
-      <Button variant="delete">Supprimer</Button>
-    </ButtonWrapper>
-  </Frame>
-);
+const ObjectifForm = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [objectif, setObjectif] = useState({
+    title: '',
+    description: '',
+    deadline: null, // La deadline est maintenant un objet Date
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchObjectif = async () => {
+      if (id) {
+        try {
+          const docRef = doc(db, 'Objectifs', id);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setObjectif({
+              ...data,
+              deadline: data.deadline?.toDate() || null, // Convertir Firestore Timestamp en Date
+            });
+            setIsEditing(true);
+          }
+        } catch (e) {
+          console.error('Erreur lors du chargement de l’objectif :', e);
+        }
+      }
+    };
+
+    fetchObjectif();
+  }, [id]);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setObjectif((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleDateChange = (date) => {
+    setObjectif((prev) => ({
+      ...prev,
+      deadline: date,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const docRef = doc(db, 'Objectifs', id || crypto.randomUUID());
+      const payload = {
+        ...objectif,
+        deadline: objectif.deadline ? new Date(objectif.deadline) : null, // Convertir en Timestamp Firestore
+      };
+      await setDoc(docRef, payload);
+      navigate('/dashboard');
+    } catch (e) {
+      console.error('Erreur lors de la sauvegarde de l’objectif :', e);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    try {
+      const docRef = doc(db, 'Objectifs', id);
+      await deleteDoc(docRef);
+      navigate('/dashboard');
+    } catch (e) {
+      console.error('Erreur lors de la suppression de l’objectif :', e);
+    }
+  };
+
+  return (
+    <Frame>
+      <InputWrapper>
+        <label htmlFor="title">Titre :</label>
+        <input
+          id="title"
+          value={objectif.titre}
+          onChange={handleChange}
+          placeholder="Un titre qui nous inspire..."
+        />
+      </InputWrapper>
+      <InputWrapper>
+        <label htmlFor="description">Description :</label>
+        <textarea
+          id="description"
+          value={objectif.description}
+          onChange={handleChange}
+          placeholder="Qu'est-ce qui rend cet objectif motivant ? Pourquoi c'est une priorité ? "
+          style={{ minHeight: '300px' }}
+        />
+      </InputWrapper>
+      <InputWrapper>
+        <label htmlFor="deadline">Deadline :</label>
+        <DatePicker
+          selected={objectif.deadline} // La date sélectionnée
+          onChange={handleDateChange} // Fonction pour mettre à jour
+          dateFormat="yyyy-MM-dd" // Format lisible
+          placeholderText="Choisissez une date"
+        />
+      </InputWrapper>
+      <ButtonWrapper>
+        <Button $variant="primary" onClick={handleSave}>
+          Sauvegarder
+        </Button>
+        <Button $variant="secondary" onClick={() => navigate('/dashboard')}>
+          Annuler
+        </Button>
+        {isEditing && (
+          <Button $variant="delete" onClick={handleDelete}>
+            Supprimer
+          </Button>
+        )}
+      </ButtonWrapper>
+    </Frame>
+  );
+};
 
 export default ObjectifForm;
