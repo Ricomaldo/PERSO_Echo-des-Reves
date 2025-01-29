@@ -27,7 +27,7 @@ function App() {
     '/': 'Page de Connexion',
     '/dashboard': 'Tableau de Bord',
     '/objectifs': 'Résumé des Objectifs',
-    '/calendrier': 'Calendrier',
+    '/calendrier': 'Historique',
     '/settings': 'Configuration',
     '/Adventure': 'Mission',
     '*': 'Erreur',
@@ -39,9 +39,7 @@ function App() {
   if (location.pathname.startsWith('/objectif/')) {
     pageTitle = "Focus sur l'objectif";
   } else if (location.pathname.startsWith('/session')) {
-    pageTitle = params.id
-      ? `Modifier Session ${params.id}`
-      : 'Nouvelle Session';
+    pageTitle = 'Focus Session';
   } else {
     // Pour les autres pages, récupérer le titre par défaut
     pageTitle = pages[location.pathname] || 'Page inconnue';

@@ -8,7 +8,7 @@ import Frame from '../layout/Frame';
 import Button from '../components/Button';
 import { db } from '../utils/firebaseConfig';
 import { useUser } from '../utils/contexts/UserProvider'; // Import du UserProvider
-
+import { v4 as uuidv4 } from 'uuid';
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -108,11 +108,12 @@ const ObjectifForm = () => {
 
   const handleSave = async () => {
     try {
-      const docRef = doc(db, 'Objectifs', id || crypto.randomUUID());
+      const docRef = doc(db, 'Objectifs', id || uuidv4());
       const payload = {
         ...objectif,
         deadline: objectif.deadline ? new Date(objectif.deadline) : null, // Convertir en Timestamp Firestore
         participant: activeUser.name, // Ajoute le participant actif
+        progression: 0, // Initialiser la progression à 0%
       };
       await setDoc(docRef, payload);
       navigate('/dashboard');
@@ -163,9 +164,6 @@ const ObjectifForm = () => {
         />
       </InputWrapper>
       <ButtonWrapper>
-        <Button $variant="primary" onClick={handleSave}>
-          Sauvegarder
-        </Button>
         <Button $variant="secondary" onClick={() => navigate('/dashboard')}>
           Annuler
         </Button>
@@ -173,7 +171,10 @@ const ObjectifForm = () => {
           <Button $variant="delete" onClick={handleDelete}>
             Supprimer
           </Button>
-        )}
+        )}{' '}
+        <Button $variant="primary" onClick={handleSave}>
+          Sauvegarder
+        </Button>
       </ButtonWrapper>
     </Frame>
   );

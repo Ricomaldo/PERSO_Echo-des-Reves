@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import RocketIcon from '@assets/icons/rocket.svg?react';
 import Notebook from '@assets/icons/notebook-pen.svg?react';
+import { v4 as uuidv4 } from 'uuid';
 
 const MenuPlusContainer = styled.nav`
   position: fixed;
@@ -118,24 +119,22 @@ const MenuPlus = ({ isOpen, closeMenu }) => {
   }, [isOpen, closeMenu]);
 
   // Actions pour chaque bouton
+  const generateAndNavigate = (path) => {
+    const newId = uuidv4(); // Utilisation d'UUID
+    navigate(`${path}/${newId}`);
+    closeMenu();
+  };
+
   const actions = [
     {
       name: 'rocket',
       icon: RocketIcon,
-      action: () => {
-        const newId = crypto.randomUUID(); // Génère un nouvel ID unique
-        navigate(`/objectif/${newId}`); // Navigue vers /objectif/:id
-        closeMenu(); // Ferme le menu après clic
-      },
+      action: () => generateAndNavigate('/objectif'), // Utilise la fonction utilitaire
     },
     {
       name: 'notebook',
       icon: Notebook,
-      action: () => {
-        const newId = crypto.randomUUID(); // Génère un nouvel ID unique
-        navigate(`/session/${newId}`); // Navigue vers /objectif/:id
-        closeMenu(); // Ferme le menu après clic
-      },
+      action: () => generateAndNavigate('/session'), // Utilise la fonction utilitaire
     },
   ];
 

@@ -6,7 +6,7 @@ const users = [
     name: 'Eric',
     pseudo: 'Irim',
     avatar: profilEric,
-    theme: 'light',
+    theme: 'dark',
     customTheme: {
       // highlight: '#409fff',
       // secondary: '#c6e2ff',

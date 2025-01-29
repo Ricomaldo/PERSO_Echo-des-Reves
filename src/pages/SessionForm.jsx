@@ -8,7 +8,7 @@ import Frame from '../layout/Frame';
 import Button from '../components/Button';
 import { db } from '../utils/firebaseConfig';
 import { useUser } from '../utils/contexts/UserProvider'; // Import UserProvider
-
+import { v4 as uuidv4 } from 'uuid';
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -108,7 +108,7 @@ const SessionForm = () => {
 
   const handleSave = async () => {
     try {
-      const docRef = doc(db, 'Sessions', id || crypto.randomUUID());
+      const docRef = doc(db, 'Sessions', id || uuidv4());
       const payload = {
         ...session,
         date: session.date ? new Date(session.date) : null, // Convertir en Timestamp Firestore
@@ -149,7 +149,7 @@ const SessionForm = () => {
           id="notes"
           value={session.notes}
           onChange={handleChange}
-          placeholder="Note ici les points essentiels de cet échange..."
+          placeholder="Note ici les points essentiels de cet échange : les idées marquantes, les objectifs évoqués, les besoins ou attentes exprimées, ainsi que les actions concrètes envisagées. Identifie les obstacles ou freins, les émotions, et les moments de clarté ou de confusion. Capture les ressources ou atouts identifiés, les engagements pris, et les solutions ou pistes qui sont explorées"
           style={{ minHeight: '300px' }}
         />
       </InputWrapper>
@@ -163,17 +163,18 @@ const SessionForm = () => {
         />
       </InputWrapper>
       <ButtonWrapper>
-        <Button $variant="primary" onClick={handleSave}>
-          Sauvegarder
-        </Button>
+        {' '}
         <Button $variant="secondary" onClick={() => navigate('/dashboard')}>
           Annuler
         </Button>
-        {isEditing && (
+        <Button $variant="primary" onClick={handleSave}>
+          Sauvegarder
+        </Button>
+        {/* {isEditing && (
           <Button $variant="delete" onClick={handleDelete}>
             Supprimer
           </Button>
-        )}
+        )} */}
       </ButtonWrapper>
     </Frame>
   );

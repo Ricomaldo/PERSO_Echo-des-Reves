@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import ThemeToggle from '../components/ThemeToggle';
 
 const GiphyWrapper = styled.div`
   width: 320px;
@@ -7,7 +8,7 @@ const GiphyWrapper = styled.div`
   padding-bottom: 51%;
   position: relative;
   margin-top: 32px;
-
+  margin-bottom: 32px;
   iframe {
     position: absolute;
     width: 100%;
@@ -16,7 +17,11 @@ const GiphyWrapper = styled.div`
     pointer-events: none; /* Désactive les clics sur l'iframe */
   }
 `;
-
+const ThemeToggleWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Configuration = () => (
   <>
     {' '}
@@ -26,8 +31,11 @@ const Configuration = () => (
           src="https://giphy.com/embed/26FmQ6EOvLxp6cWyY"
           allowFullScreen
         ></iframe>
-      </GiphyWrapper>
+      </GiphyWrapper>{' '}
     </Link>
+    <ThemeToggleWrapper>
+      <ThemeToggle />
+    </ThemeToggleWrapper>
   </>
 );
 

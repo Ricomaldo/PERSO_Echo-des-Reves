@@ -21,14 +21,14 @@ export const typography = {
   fontFamilyH1: "'Pacifico', sans-serif",
   fontFamilyH2: "'Inter', sans-serif",
   fontFamilyH3: "'Inter', sans-serif",
-  fontFamilyBody: "'Caveat', sans-serif",
+  fontFamilyBody: "' ', sans-serif",
   fontFamilyNeutral: "'Caveat', sans-serif",
 
   fontSizeHeader: '24px',
   fontSizeH1: '24px',
   fontSizeH2: '20px',
   fontSizeH3: '16px',
-  fontSizeBody: '20px',
+  fontSizeBody: '24px',
 
   fontWeightHeader: '400',
   fontWeightH1: '400',

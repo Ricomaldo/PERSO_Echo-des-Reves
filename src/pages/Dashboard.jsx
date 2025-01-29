@@ -94,10 +94,6 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
-  // const handleSelectObjectif = (objectif) => {
-  //   navigate(`/objectif/${objectif.id}`);
-  // };
-
   const handleSelectSession = (session) => {
     navigate(`/session/${session.id}`);
   };
@@ -154,50 +150,14 @@ function Dashboard() {
           <p>Aucune session récente trouvée.</p>
         ) : (
           <>
-            {/* Vérifie si une session existe à l'index courant */}
             {sessions[currentSessionIndex] ? (
               <>
-                {/* Navigation avec les flèches */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: `240px`,
-                    height: '32px',
-                  }}
-                >
-                  {/* Flèche gauche */}
-                  <Button
-                    $variant="secondary"
-                    onClick={() =>
-                      setCurrentSessionIndex((prev) =>
-                        Math.min(prev + 1, sessions.length - 1)
-                      )
-                    } // Empêche d'aller au-delà de la dernière session
-                    disabled={currentSessionIndex === sessions.length - 1}
-                  >
-                    <i className="fa-solid fa-arrow-left"></i>
-                  </Button>
-
-                  {/* Flèche droite */}
-                  <Button
-                    $variant="secondary"
-                    onClick={() =>
-                      setCurrentSessionIndex((prev) => Math.max(prev - 1, 0))
-                    } // Empêche d'aller en dessous de 0
-                    disabled={currentSessionIndex === 0}
-                  >
-                    <i className="fa-solid fa-arrow-right"></i>
-                  </Button>
-                </div>
-                <p
-                  style={{ marginTop: '8px' }}
-                  onClick={() =>
-                    handleSelectSession(sessions[currentSessionIndex])
-                  }
-                >
-                  {sessions[currentSessionIndex].notes}
+                <p style={{ marginTop: '8px' }}>
+                  Notes : {sessions[currentSessionIndex].notes}
                 </p>
+                {sessions[currentSessionIndex].vigilance && (
+                  <p>Vigilance : {sessions[currentSessionIndex].vigilance}</p>
+                )}
               </>
             ) : (
               <p>Session introuvable.</p>

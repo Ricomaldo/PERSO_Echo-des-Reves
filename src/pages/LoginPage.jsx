@@ -1,18 +1,11 @@
 import { useUser } from '../utils/contexts/UserProvider';
 import { Link } from 'react-router-dom';
 
-import ThemeToggle from '../components/ThemeToggle';
 import ProfilCard from '../components/ProfilCard';
 import Carousel from '../components/Carousel';
 
 import users from '../utils/users';
 import styled from 'styled-components';
-
-const ThemeToggleWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 const ProfilSelector = styled.div`
   display: flex;
@@ -28,7 +21,7 @@ const QuoteBloc = styled.div`
   justify-content: center;
   height: 240px;
   width: 320px;
-
+  margin-top: 80px;
   border-radius: 32px;
   background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border: 2px solid ${({ theme }) => theme.colors.borderNeutral};
@@ -60,9 +53,6 @@ const LoginPage = () => {
           ))}
         </ProfilSelector>
       </Link>
-      <ThemeToggleWrapper>
-        <ThemeToggle />
-      </ThemeToggleWrapper>
       <QuoteBloc>
         <Carousel />
       </QuoteBloc>{' '}

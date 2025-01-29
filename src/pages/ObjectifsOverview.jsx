@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../utils/contexts/UserProvider';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
 import ProgressBar from '../components/ProgressBar';
 import Collapse from '../components/Collapse';
@@ -95,10 +102,14 @@ function ObjectifsOverview() {
 
   const handleDeleteObjectif = async (objectifId) => {
     try {
-      await deleteDoc(collection(db, 'Objectifs').doc(objectifId)); // Suppression du document
+      const objectifRef = doc(db, 'Objectifs', objectifId); // Référence correcte au document
+      await deleteDoc(objectifRef); // Suppression du document dans Firestore
+
+      // Met à jour l'état local en supprimant l'objectif de la liste
       setObjectifs((prevObjectifs) =>
         prevObjectifs.filter((objectif) => objectif.id !== objectifId)
-      ); // Met à jour la liste des objectifs localement
+      );
+
       console.log('Objectif supprimé avec succès.');
     } catch (e) {
       console.error('Erreur lors de la suppression :', e);
@@ -113,7 +124,7 @@ function ObjectifsOverview() {
           Aucun objectif en cours pour {activeUser?.name || 'cet utilisateur'}.
         </p>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul style={{ width: '100%' }}>
           {objectifs.map((objectif) => (
             <li
               key={objectif.id}
@@ -136,13 +147,14 @@ function ObjectifsOverview() {
                     marginBottom: '16px',
                   }}
                 >
-                  Échéance :{' '}
-                  {new Date(
-                    objectif.deadline.seconds * 1000
-                  ).toLocaleDateString('fr-FR', {
-                    month: 'short',
-                    year: 'numeric',
-                  })}
+                  {objectif.deadline
+                    ? `Échéance: ${new Date(
+                        objectif.deadline.seconds * 1000
+                      ).toLocaleDateString('fr-FR', {
+                        month: 'short',
+                        year: 'numeric',
+                      })}`
+                    : 'Pas de deadline'}
                 </p>
                 <ButtonWrapper>
                   <Button

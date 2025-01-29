@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
-  flex: 1;
+  ${({ $fullWidth }) => ($fullWidth ? 'flex: 1;' : 'width: auto;')}
+  min-width: ${({ $minWidth }) => $minWidth || 'auto'};
+  max-width: ${({ $maxWidth }) => $maxWidth || 'auto'};
   padding: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: ${({ theme, $variant }) =>
     $variant === 'secondary'
-      ? theme.colors.secondary
+      ? theme.colors.primary
       : $variant === 'delete'
       ? '#600000'
       : theme.colors.text};
@@ -53,9 +55,22 @@ const StyledButton = styled.button`
   }
 `;
 
-const Button = ({ children, $variant = 'primary', onClick }) => {
+const Button = ({
+  children,
+  $variant = 'primary',
+  onClick,
+  $fullWidth = false,
+  $minWidth = 'auto',
+  $maxWidth = 'auto',
+}) => {
   return (
-    <StyledButton $variant={$variant} onClick={onClick}>
+    <StyledButton
+      $variant={$variant}
+      onClick={onClick}
+      $fullWidth={$fullWidth}
+      $minWidth={$minWidth}
+      $maxWidth={$maxWidth}
+    >
       {children}
     </StyledButton>
   );
