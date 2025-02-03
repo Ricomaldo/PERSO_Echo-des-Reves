@@ -1,28 +1,35 @@
-import { createContext, useState, useMemo } from 'react';
+import { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { getTheme } from '../../styles/themes';
+import { getTheme } from '../../styles/theme/themes';
 import { useUser } from './UserProvider';
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const { activeUser, setActiveUser } = useUser(); // Récupère setActiveUser
-  const [mode, setMode] = useState('dark');
+  const { activeUser, setActiveUser } = useUser(); // UserProvider en amont
+  const [mode, setMode] = useState(activeUser?.theme || 'dark'); // Utilise le mode utilisateur s'il existe
+
+  // 🔄 Met à jour le mode si activeUser.theme change
+  useEffect(() => {
+    if (activeUser?.theme) {
+      setMode(activeUser.theme);
+    }
+  }, [activeUser?.theme]);
 
   const toggleTheme = () => {
+    const newMode = mode === 'light' ? 'dark' : 'light';
+
     if (activeUser?.theme) {
       setActiveUser((prev) => ({
         ...prev,
-        theme: prev.theme === 'light' ? 'dark' : 'light',
+        theme: newMode,
       }));
-    } else {
-      setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
     }
+    setMode(newMode); // 🔄 Met à jour `mode` dans tous les cas
   };
 
   const currentTheme = useMemo(() => {
-    const userMode = activeUser?.theme || mode; // Priorité au mode utilisateur
-    const baseTheme = getTheme(userMode); // Récupère le thème basé sur le mode
+    const baseTheme = getTheme(mode); // Utilise `mode`, mis à jour correctement
 
     if (activeUser?.customTheme) {
       return {
@@ -43,3 +50,5 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
+export const useTheme = () => useContext(ThemeContext);

@@ -1,0 +1,13 @@
+import styled from 'styled-components';
+
+export const FrameContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 16px;
+  background-color: ${({ theme }) => theme.colors.backgroundBase};
+  border: 2px dashed ${({ theme }) => theme.colors.primary};
+  padding: 16px;
+  width: 100%;
+  gap: 16px;
+`;
