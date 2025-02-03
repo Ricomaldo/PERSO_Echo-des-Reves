@@ -31,7 +31,7 @@ export const TabBarIcon = styled.div`
   width: 40px;
   height: 40px;
   color: ${({ theme, $isActive }) =>
-    $isActive ? theme.colors.linkActive : theme.colors.linkPrimary};
+    $isActive ? theme.colors.accent : theme.colors.linkPrimary};
 
   &:hover {
     color: ${({ theme }) => theme.colors.linkHover};

@@ -13,8 +13,8 @@ const collapseVariants = {
   closed: { opacity: 0, height: 0 },
 };
 
-const Collapse = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const Collapse = ({ title, children, defaultOpen = true }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   const toggleCollapse = () => {
     setIsOpen((prev) => !prev);
@@ -37,7 +37,7 @@ const Collapse = ({ title, children }) => {
 
       <CollapseContent
         id={`collapse-content-${title}`}
-        initial="closed"
+        initial={defaultOpen ? 'open' : 'closed'}
         animate={isOpen ? 'open' : 'closed'}
         variants={collapseVariants}
         transition={{ duration: 0.4, ease: 'easeInOut' }}

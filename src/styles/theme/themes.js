@@ -12,7 +12,7 @@ const sharedTypography = {
   fontSizeHeader: '28px',
   fontSizeH1: '24px',
   fontSizeH2: '24px',
-  fontSizeH3: '20px',
+  fontSizeH3: '22px',
   fontSizeBody: '20px',
 
   fontWeightHeader: '600',

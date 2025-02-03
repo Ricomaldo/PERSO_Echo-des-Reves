@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Button } from '../../components/Button';
-import { db } from '../../utils/firebase/firebaseConfig';
+import { Button, ButtonGroup } from '../../components/Button';
 import { useUser } from '../../utils/contexts/UserProvider';
+import { useFirestore } from '../../utils/contexts/FirestoreProvider';
 import { v4 as uuidv4 } from 'uuid';
 import { Frame, PageTitle } from '../../layout';
-import { InputWrapper, ButtonWrapper } from './sessionFormStyles';
+import { CustomInput } from '../../components/CustomInput';
 
 const SessionForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { activeUser } = useUser();
+  const { saveSession, sessions } = useFirestore();
+
   const [session, setSession] = useState({
     date: null,
     notes: '',
@@ -22,28 +22,19 @@ const SessionForm = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const fetchSession = async () => {
-      if (id) {
-        try {
-          const docRef = doc(db, 'Sessions', id);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setSession({
-              ...data,
-              date: data.date?.toDate() || null,
-            });
-            setIsEditing(true);
-          }
-        } catch (e) {
-          console.error('Erreur lors du chargement de la session :', e);
-        }
+    if (id) {
+      const existingSession = sessions.find((sess) => sess.id === id);
+      if (existingSession) {
+        setSession({
+          ...existingSession,
+          date: existingSession.date
+            ? new Date(existingSession.date.seconds * 1000)
+            : null,
+        });
+        setIsEditing(true);
       }
-    };
-
-    fetchSession();
-  }, [id]);
+    }
+  }, [id, sessions]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -61,18 +52,8 @@ const SessionForm = () => {
   };
 
   const handleSave = async () => {
-    try {
-      const docRef = doc(db, 'Sessions', id || uuidv4());
-      const payload = {
-        ...session,
-        date: session.date ? new Date(session.date) : null,
-        participant: activeUser.name,
-      };
-      await setDoc(docRef, payload);
-      navigate('/dashboard');
-    } catch (e) {
-      console.error('Erreur lors de la sauvegarde de la session :', e);
-    }
+    await saveSession(session, id || uuidv4());
+    navigate('/dashboard');
   };
 
   return (
@@ -81,41 +62,39 @@ const SessionForm = () => {
         title={isEditing ? 'Consulter une session' : 'Créer une session'}
       />
       <Frame>
-        <InputWrapper>
-          <label htmlFor="date">Date :</label>
-          <DatePicker
-            selected={session.date}
-            onChange={handleDateChange}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="À quelle date cette session a lieu ?"
-          />
-        </InputWrapper>
-        <InputWrapper>
-          <label htmlFor="notes">Prise de note :</label>
-          <textarea
-            id="notes"
-            value={session.notes}
-            onChange={handleChange}
-            placeholder="Note ici les points essentiels de cet échange : les idées marquantes, les objectifs évoqués, les besoins ou attentes exprimées, ainsi que les actions concrètes envisagées. Identifie les obstacles ou freins, les émotions, et les moments de clarté ou de confusion. Capture les ressources ou atouts identifiés, les engagements pris, et les solutions ou pistes qui sont explorées."
-          />
-        </InputWrapper>
-        <InputWrapper>
-          <label htmlFor="vigilance">Vigilance :</label>
-          <input
-            id="vigilance"
-            value={session.vigilance}
-            onChange={handleChange}
-            placeholder="Qu'est-ce qui mérite toute ton attention ?"
-          />
-        </InputWrapper>
-        <ButtonWrapper>
+        <CustomInput
+          id="date"
+          label="Date"
+          type="date"
+          value={session.date}
+          onChange={handleDateChange}
+          placeholder="À quelle date cette session a lieu ?"
+        />
+
+        <CustomInput
+          id="notes"
+          label="Prise de note"
+          type="textarea"
+          value={session.notes}
+          onChange={handleChange}
+          placeholder="Note ici les points essentiels de cet échange..."
+        />
+
+        <CustomInput
+          id="vigilance"
+          label="Vigilance"
+          value={session.vigilance}
+          onChange={handleChange}
+          placeholder="Qu'est-ce qui mérite toute ton attention ?"
+        />
+        <ButtonGroup $align="center">
           <Button $variant="secondary" onClick={() => navigate('/dashboard')}>
             Annuler
           </Button>
           <Button $variant="primary" onClick={handleSave}>
             Sauvegarder
           </Button>
-        </ButtonWrapper>
+        </ButtonGroup>
       </Frame>
     </>
   );

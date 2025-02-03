@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter as Router } from 'react-router-dom';
 import { UserProvider } from './utils/contexts/UserProvider.jsx';
 import { ThemeProvider } from './utils/contexts/ThemeProvider.jsx';
+import { FirestoreProvider } from './utils/contexts/FirestoreProvider.jsx';
 import { ScrollToTop } from './layout';
 
 import GlobalStyle from './styles/global/GlobalStyle';
@@ -10,7 +11,9 @@ import App from './App.jsx';
 
 const RootProviders = ({ children }) => (
   <UserProvider>
-    <ThemeProvider>{children}</ThemeProvider>
+    <ThemeProvider>
+      <FirestoreProvider>{children}</FirestoreProvider>
+    </ThemeProvider>
   </UserProvider>
 );
 

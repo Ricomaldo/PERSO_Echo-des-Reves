@@ -1,45 +1,30 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import 'react-calendar/dist/Calendar.css';
-import { useUser } from '../../utils/contexts/UserProvider';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { db } from '../../utils/firebase/firebaseConfig';
+
+import { useFirestore } from '../../utils/contexts/FirestoreProvider';
 import { Collapse } from '../../components/Collapse';
-import { Button } from '../../components/Button';
+import { Button, ButtonGroup } from '../../components/Button';
 import { Calendrier } from '../../components/Calendrier';
 import { PageTitle } from '../../layout';
-import { ButtonWrapper, SessionNavigation } from './historiqueStyles';
+import { NavigationArrows } from '../../components/NavigationArrows';
+
+import { formatDate } from '../../utils/dateUtils';
 
 const Historique = () => {
-  const [sessions, setSessions] = useState([]);
+  const { sessions, isLoading } = useFirestore();
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
-  const { activeUser } = useUser();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchSessions = async () => {
-      if (!activeUser || !activeUser.name) return;
+  const currentSession = useMemo(
+    () => (sessions.length > 0 ? sessions[currentSessionIndex] : null),
+    [sessions, currentSessionIndex]
+  );
 
-      const sessionsCollectionRef = collection(db, 'Sessions');
-      const querySessions = query(
-        sessionsCollectionRef,
-        where('participant', '==', activeUser.name),
-        orderBy('date', 'desc')
-      );
-
-      const snapshot = await getDocs(querySessions);
-      const fetchedSessions = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setSessions(fetchedSessions);
-      if (fetchedSessions.length > 0) setCurrentSessionIndex(0);
-    };
-
-    fetchSessions();
-  }, [activeUser]);
+  const sessionDate = useMemo(
+    () => formatDate(currentSession?.date),
+    [currentSession]
+  );
 
   const handleSessionNavigation = (direction) => {
     if (sessions.length === 0) return;
@@ -59,30 +44,11 @@ const Historique = () => {
     navigate(`/session/${sessionId}`);
   };
 
-  const currentSession = useMemo(
-    () => (sessions.length > 0 ? sessions[currentSessionIndex] : null),
-    [sessions, currentSessionIndex]
-  );
-
-  const sessionDate = useMemo(() => {
-    if (currentSession?.date?.seconds) {
-      return new Date(currentSession.date.seconds * 1000).toLocaleDateString(
-        'fr-FR',
-        {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        }
-      );
-    }
-    return 'Date inconnue';
-  }, [currentSession]);
-
   return (
     <>
       <PageTitle title="Historique" />
 
-      <Collapse title="Calendrier">
+      <Collapse title="Calendrier" defaultOpen={false}>
         <Calendrier sessions={sessions} />
       </Collapse>
 
@@ -91,38 +57,23 @@ const Historique = () => {
           currentSession ? sessionDate : 'Aucune session récente'
         }`}
       >
-        {sessions.length === 0 ? (
+        {isLoading ? (
+          <p>Chargement des sessions...</p>
+        ) : sessions.length === 0 ? (
           <p>Aucune session trouvée.</p>
         ) : (
           <>
             {currentSession ? (
               <>
-                <SessionNavigation $hasMultipleSessions={sessions.length > 1}>
-                  {currentSessionIndex < sessions.length - 1 && (
-                    <Button
-                      $variant="secondary"
-                      onClick={() => handleSessionNavigation('prev')}
-                      $fullWidth={false}
-                      $minWidth="40px"
-                      $maxWidth="50px"
-                    >
-                      <i className="fa-solid fa-arrow-left"></i>
-                    </Button>
-                  )}
+                {/* 🔄 Navigation entre sessions */}
+                <NavigationArrows
+                  onPrev={() => handleSessionNavigation('prev')}
+                  onNext={() => handleSessionNavigation('next')}
+                  canGoPrev={currentSessionIndex < sessions.length - 1}
+                  canGoNext={currentSessionIndex > 0}
+                />
 
-                  {currentSessionIndex > 0 && (
-                    <Button
-                      $variant="secondary"
-                      onClick={() => handleSessionNavigation('next')}
-                      $fullWidth={false}
-                      $minWidth="40px"
-                      $maxWidth="50px"
-                    >
-                      <i className="fa-solid fa-arrow-right"></i>
-                    </Button>
-                  )}
-                </SessionNavigation>
-
+                {/* 📄 Détails de la session */}
                 <p>
                   Notes : {currentSession.notes || 'Aucune note disponible'}
                 </p>
@@ -130,14 +81,15 @@ const Historique = () => {
                   <p>Vigilance : {currentSession.vigilance}</p>
                 )}
 
-                <ButtonWrapper>
+                {/* 🎯 Bouton Modifier */}
+                <ButtonGroup $align="center">
                   <Button
                     $variant="primary"
                     onClick={() => handleSelectSession(currentSession.id)}
                   >
                     Modifier
                   </Button>
-                </ButtonWrapper>
+                </ButtonGroup>
               </>
             ) : (
               <p>Session introuvable.</p>

@@ -71,7 +71,7 @@ export const StyledButton = styled.button`
   border: ${({ theme, $variant }) => buttonVariants[$variant]?.(theme).border};
   border-radius: 24px;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  // transition: background-color 0.2s ease, color 0.2s ease;
 
   &:hover {
     background-color: ${({ theme, $variant }) =>
@@ -94,5 +94,14 @@ export const StyledButton = styled.button`
     border: 1px solid ${({ theme }) => theme.colors.borderBase};
     cursor: not-allowed;
     opacity: 0.5;
+  }
+  opacity: 0.7;
+  transition: all 0.2s, background-color 0.3s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+  &:active {
+    opacity: 1;
   }
 `;

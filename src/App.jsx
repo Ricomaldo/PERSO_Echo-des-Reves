@@ -13,8 +13,6 @@ import { ErrorPage } from './pages/ErrorPage';
 import { ObjectifsOverview } from './pages/ObjectifsOverview';
 import { Adventure } from './mocks/adventure/';
 
-console.log('Connexion établie avec Firebase :', app);
-
 function App() {
   const location = useLocation();
 

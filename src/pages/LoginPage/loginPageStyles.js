@@ -5,7 +5,6 @@ export const PageLayout = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 32px;
-  margin-top: 48px;
 `;
 
 export const ProfilSelector = styled.div`
@@ -23,7 +22,7 @@ export const QuoteBloc = styled.div`
   align-items: center;
   height: 240px;
   width: 320px;
-  margin-top: 80px;
+
   border-radius: 32px;
   background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border: 2px solid ${({ theme }) => theme.colors.borderBase};

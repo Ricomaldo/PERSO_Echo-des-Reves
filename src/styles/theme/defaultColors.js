@@ -19,9 +19,9 @@ const defaultColors = {
   textAccent: '#eca72c', // Texte accentué, commun aux deux modes
 
   // **Liens**
-  linkPrimary: '#617bbe', // Couleur principale des liens
+  linkPrimary: '#0ba4b3', // Couleur principale des liens
   linkHover: '#0ba4b3', // Couleur des liens au survol
-  linkActive: '#eca72c', // Couleur des liens actifs
+  linkActive: '#0ba4b3', // Couleur des liens actifs
   linkVisited: '#4e6d9c', // Couleur des liens visités
 
   // **Bordures**
