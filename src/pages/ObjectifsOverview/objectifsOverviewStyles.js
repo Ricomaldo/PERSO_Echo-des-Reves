@@ -34,11 +34,19 @@ export const CompletedObjectiveItem = styled.li`
     background-color: ${({ theme }) => theme.backgroundHover};
   }
 `;
-
-export const ButtonWrapper = styled.div`
-  margin: auto;
-  gap: 8px;
+export const TextAndStars = styled.div`
   display: flex;
-  justify-content: space-around;
-  width: 50%;
+  justify-content: space-between;
+  align-items: center; /* Aligne le texte et les étoiles verticalement */
+  width: 100%;
+`;
+
+export const StarDisplay = styled.div`
+  display: flex;
+  gap: 4px;
+
+  i {
+    font-size: 12px;
+    color: ${({ theme }) => theme.colors.textAccent};
+  }
 `;

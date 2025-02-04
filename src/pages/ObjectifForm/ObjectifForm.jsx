@@ -91,6 +91,14 @@ const ObjectifForm = () => {
           onChange={handleChange}
           placeholder="Qu'est-ce qui rend cet objectif motivant ? Pourquoi c'est une priorité ?"
         />
+        <CustomInput
+          id="etoiles"
+          label="Nombre d'étoiles"
+          type="number"
+          value={objectif.etoiles}
+          onChange={handleChange}
+          placeholder="Attribuez 1 à 3 étoiles"
+        />
 
         <CustomInput
           id="deadline"

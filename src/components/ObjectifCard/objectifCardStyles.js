@@ -12,3 +12,11 @@ export const ObjectiveTitle = styled.h3`
   font-size: ${({ theme }) => theme.typography.fontSizeH3};
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
+export const StarDisplay = styled.div`
+  display: flex;
+  gap: 4px;
+  i {
+    font-size: 14px;
+    color: ${({ theme }) => theme.colors.textAccent};
+  }
+`;

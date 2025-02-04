@@ -13,6 +13,7 @@ import {
 import { db } from '../firebase/firebaseConfig';
 import { useUser } from './UserProvider';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-toastify';
 
 const FirestoreContext = createContext();
 
@@ -24,6 +25,9 @@ export const FirestoreProvider = ({ children }) => {
   const [preferences, setPreferences] = useState({});
   const [themes, setThemes] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const [currentStars, setCurrentStars] = useState(0);
 
   // 🔹 Chargement en temps réel des objectifs
   useEffect(() => {
@@ -91,6 +95,46 @@ export const FirestoreProvider = ({ children }) => {
     fetchThemes();
   }, []);
 
+  // 🔹 Calcul des étoiles et du niveau
+  useEffect(() => {
+    if (objectifs.length > 0) {
+      // Récupération des objectifs complétés
+      const completedObjectifs = objectifs.filter(
+        (obj) => obj.progression === 100
+      );
+
+      // ✅ Conversion des étoiles en nombre et addition correcte
+      const completedStars = completedObjectifs.reduce(
+        (total, obj) => total + Number(obj.etoiles || 0), // 🔥 Transformation en nombre ici !
+        0
+      );
+
+      console.log('Total des étoiles des objectifs terminés:', completedStars);
+
+      // ✅ Calcul du niveau et des étoiles restantes
+      const newLevel = Math.floor(completedStars / 4) + 1; // 4 étoiles par niveau
+      const newStars = completedStars % 4; // Étoiles restantes pour le palier
+
+      console.log('Niveau calculé:', newLevel);
+      console.log('Étoiles actuelles dans le palier:', newStars);
+
+      if (newLevel > currentLevel) {
+        handleLevelUp(newLevel);
+      }
+
+      setCurrentLevel(newLevel);
+      setCurrentStars(newStars);
+    } else {
+      console.log('🚨 Aucun objectif terminé trouvé.');
+      setCurrentLevel(1);
+      setCurrentStars(0);
+    }
+  }, [objectifs]);
+
+  const handleLevelUp = (newLevel) => {
+    toast.success(`🎉 Félicitations ! Niveau ${newLevel} débloqué !`);
+  };
+
   // 🔥 🔹 **Fonctions CRUD pour les Objectifs**
   const saveObjectif = async (objectif, id = null) => {
     try {
@@ -132,6 +176,8 @@ export const FirestoreProvider = ({ children }) => {
         saveObjectif,
         deleteObjectif,
         saveSession,
+        currentLevel, // 🚀 Exposer le niveau
+        currentStars, // 🚀 Exposer les étoiles
       }}
     >
       {children}

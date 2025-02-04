@@ -3,7 +3,7 @@ import { useUser } from '../../utils/contexts/UserProvider';
 import { useFirestore } from '../../utils/contexts/FirestoreProvider';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Collapse } from '../../components/Collapse';
-import { Button } from '../../components/Button';
+import { Button, ButtonGroup } from '../../components/Button';
 import { PageTitle } from '../../layout';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -12,9 +12,11 @@ import {
   ObjectiveDescription,
   DeadlineText,
   CompletedObjectiveItem,
-  ButtonWrapper,
+  StarDisplay,
+  TextAndStars,
 } from './objectifsOverviewStyles';
 import { formatDate } from '../../utils/dateUtils';
+
 function ObjectifsOverview() {
   const { activeUser } = useUser();
   const { objectifs, deleteObjectif, isLoading } = useFirestore();
@@ -53,7 +55,7 @@ function ObjectifsOverview() {
                     ? `Échéance: ${formatDate(objectif.deadline)}`
                     : 'Pas de deadline'}
                 </DeadlineText>
-                <ButtonWrapper>
+                <ButtonGroup>
                   <Button
                     $variant="delete"
                     onClick={() => deleteObjectif(objectif.id)}
@@ -66,7 +68,7 @@ function ObjectifsOverview() {
                   >
                     Modifier
                   </Button>
-                </ButtonWrapper>
+                </ButtonGroup>
               </Collapse>
             </ObjectiveItem>
           ))}
@@ -75,18 +77,38 @@ function ObjectifsOverview() {
 
       <Collapse title="Objectifs terminés">
         <ObjectivesList>
-          {completedObjectifs.map((objectif) => (
-            <CompletedObjectiveItem
-              key={objectif.id}
-              onClick={() => handleSelectObjectif(objectif)}
-            >
-              <strong>{objectif.titre}</strong> –{' '}
-              {objectif.deadline
-                ? formatDate(objectif.deadline)
-                : 'Pas de deadline'}
-            </CompletedObjectiveItem>
-          ))}
+          {completedObjectifs
+            .slice()
+            .sort((a, b) => {
+              if (!b.deadline) return -1;
+              if (!a.deadline) return 1;
+              return (
+                new Date(b.deadline.seconds * 1000) -
+                new Date(a.deadline.seconds * 1000)
+              );
+            })
+            .map((objectif) => (
+              <CompletedObjectiveItem
+                key={objectif.id}
+                onClick={() => handleSelectObjectif(objectif)}
+              >
+                <TextAndStars>
+                  <div>
+                    <strong>{objectif.titre}</strong> –{' '}
+                    {objectif.deadline
+                      ? formatDate(objectif.deadline)
+                      : 'Pas de deadline'}
+                  </div>
+                  <StarDisplay>
+                    {[...Array(Number(objectif.etoiles))].map((_, index) => (
+                      <i key={index} className="fa fa-star filled" />
+                    ))}
+                  </StarDisplay>
+                </TextAndStars>
+              </CompletedObjectiveItem>
+            ))}
         </ObjectivesList>
+
         <p>
           {completedObjectifs.length} objectifs ont été atteints par{' '}
           {activeUser?.name || 'cet utilisateur'}.

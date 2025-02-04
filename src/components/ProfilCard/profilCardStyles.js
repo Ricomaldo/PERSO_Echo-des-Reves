@@ -29,6 +29,7 @@ export const ProfilWrapper = styled.div`
   gap: 16px;
   cursor: pointer;
   transition: transform 0.2s ease;
+  position: relative; /* ✅ Permet de bien positionner les étoiles et le niveau */
 
   &:hover {
     transform: scale(1.05);
@@ -73,4 +74,33 @@ export const UserName = styled.h1`
   ${ProfilWrapper}:active & {
     color: ${({ theme }) => theme.colors.linkActive};
   }
+`;
+
+export const StarArc = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: -10px; /* ✅ Ajuster la position pour l'arc */
+  width: 100%;
+  gap: 4px;
+
+  .fa-star {
+    font-size: 14px;
+    color: ${({ theme }) => theme.colors.textAccent};
+  }
+
+  .empty {
+    color: ${({ theme }) => theme.colors.borderBase};
+  }
+`;
+
+export const LevelBlock = styled.div`
+  background: 'transparent';
+  color: ${({ theme }) => theme.colors.accent};
+  font-size: ${({ theme }) => theme.typography.fontSizeBody};
+  font-weight: bold;
+  border-radius: 8px;
+  position: absolute;
+
+  top: 30px;
 `;
