@@ -118,7 +118,6 @@ const StyledGlobalStyle = createGlobalStyle`
 
 function GlobalStyle() {
   const { theme } = useContext(ThemeContext);
-
   return <StyledGlobalStyle theme={theme} />;
 }
 
