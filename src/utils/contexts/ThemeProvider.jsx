@@ -1,48 +1,39 @@
-import { createContext, useContext, useState, useMemo, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { getTheme } from '../../styles/theme/themes';
-import { useUser } from './UserProvider';
+import { useFirestore } from './FirestoreProvider';
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const { activeUser, setActiveUser } = useUser(); // UserProvider en amont
-  const [mode, setMode] = useState(activeUser?.theme || 'dark'); // Utilise le mode utilisateur s'il existe
+  const { preferences, updatePreferences, themes } = useFirestore();
 
-  // 🔄 Met à jour le mode si activeUser.theme change
+  const [mode, setMode] = useState(() => {
+    return (
+      preferences?.themeMode || localStorage.getItem('themeMode') || 'dark'
+    );
+  });
+
+  // 🔄 Synchroniser `mode` avec Firestore lorsqu'un utilisateur est chargé
   useEffect(() => {
-    if (activeUser?.theme) {
-      setMode(activeUser.theme);
+    if (preferences?.themeMode && preferences.themeMode !== mode) {
+      setMode(preferences.themeMode);
     }
-  }, [activeUser?.theme]);
+  }, [preferences?.themeMode]);
 
+  // 🔄 Sauvegarder le mode dans Firestore et localStorage
   const toggleTheme = () => {
     const newMode = mode === 'light' ? 'dark' : 'light';
+    setMode(newMode);
+    localStorage.setItem('themeMode', newMode);
 
-    if (activeUser?.theme) {
-      setActiveUser((prev) => ({
-        ...prev,
-        theme: newMode,
-      }));
-    }
-    setMode(newMode); // 🔄 Met à jour `mode` dans tous les cas
+    // 🔄 Mettre à jour Firestore
+    updatePreferences({ ...preferences, themeMode: newMode });
   };
 
   const currentTheme = useMemo(() => {
-    const baseTheme = getTheme(mode); // Utilise `mode`, mis à jour correctement
-
-    if (activeUser?.customTheme) {
-      return {
-        ...baseTheme,
-        colors: {
-          ...baseTheme.colors,
-          ...activeUser.customTheme,
-        },
-      };
-    }
-
-    return baseTheme;
-  }, [mode, activeUser]);
+    return themes[preferences?.favoriteThemes?.[mode]] || getTheme(mode);
+  }, [mode, preferences, themes]);
 
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme, theme: currentTheme }}>
@@ -51,4 +42,5 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
+// 🔹 Hook pour utiliser le contexte
 export const useTheme = () => useContext(ThemeContext);

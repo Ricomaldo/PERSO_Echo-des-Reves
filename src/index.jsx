@@ -11,9 +11,9 @@ import App from './App.jsx';
 
 const RootProviders = ({ children }) => (
   <UserProvider>
-    <ThemeProvider>
-      <FirestoreProvider>{children}</FirestoreProvider>
-    </ThemeProvider>
+    <FirestoreProvider>
+      <ThemeProvider>{children}</ThemeProvider>
+    </FirestoreProvider>
   </UserProvider>
 );
 

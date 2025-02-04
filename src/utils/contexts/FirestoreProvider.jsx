@@ -4,6 +4,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   onSnapshot,
   orderBy,
   doc,
@@ -18,18 +19,16 @@ import { toast } from 'react-toastify';
 const FirestoreContext = createContext();
 
 export const FirestoreProvider = ({ children }) => {
-  const { activeUser } = useUser();
-
+  const { activeUser } = useUser(); // ✅ Attendre UserProvider
   const [objectifs, setObjectifs] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [preferences, setPreferences] = useState({});
   const [themes, setThemes] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
   const [currentLevel, setCurrentLevel] = useState(1);
   const [currentStars, setCurrentStars] = useState(0);
 
-  // 🔹 Chargement en temps réel des objectifs
+  // 🔹 Objectifs & Sessions
   useEffect(() => {
     if (!activeUser || !activeUser.name) return;
 
@@ -40,15 +39,14 @@ export const FirestoreProvider = ({ children }) => {
 
     const unsubscribe = onSnapshot(objectifsQuery, (snapshot) => {
       setObjectifs(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-      setIsLoading(false); // ✅ Indiquer que le chargement est terminé
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
   }, [activeUser]);
 
-  // 🔹 Chargement en temps réel des sessions
   useEffect(() => {
-    if (!activeUser || !activeUser.name) return;
+    if (!activeUser) return;
 
     const sessionsQuery = query(
       collection(db, 'Sessions'),
@@ -63,77 +61,69 @@ export const FirestoreProvider = ({ children }) => {
     return () => unsubscribe();
   }, [activeUser]);
 
-  // 🔹 Chargement des préférences (fetch unique)
+  // 🔹 Chargement des préférences & thèmes à chaque changement d'utilisateur
   useEffect(() => {
-    const fetchPreferences = async () => {
-      const snapshot = await getDocs(collection(db, 'Preferences'));
-      if (!snapshot.empty) {
-        setPreferences(
-          snapshot.docs.reduce(
-            (acc, doc) => ({ ...acc, [doc.id]: doc.data() }),
-            {}
-          )
-        );
-      }
-    };
-    fetchPreferences();
-  }, []);
+    if (!activeUser?.name) return;
 
-  // 🔹 Chargement des thèmes (fetch unique)
-  useEffect(() => {
-    const fetchThemes = async () => {
-      const snapshot = await getDocs(collection(db, 'Themes'));
-      if (!snapshot.empty) {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Charger les préférences de l'utilisateur
+        const prefDoc = doc(db, 'Preferences', activeUser.name);
+        const prefSnap = await getDoc(prefDoc);
+        if (prefSnap.exists()) {
+          setPreferences(prefSnap.data());
+        } else {
+          console.warn('⚠️ Aucune préférence trouvée pour cet utilisateur.');
+        }
+
+        // Charger tous les thèmes
+        const themesSnap = await getDocs(collection(db, 'Themes'));
         setThemes(
-          snapshot.docs.reduce(
+          themesSnap.docs.reduce(
             (acc, doc) => ({ ...acc, [doc.id]: doc.data() }),
             {}
           )
         );
+      } catch (error) {
+        console.error(
+          '❌ Erreur lors du chargement des préférences/thèmes :',
+          error
+        );
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchThemes();
-  }, []);
 
-  // 🔹 Calcul des étoiles et du niveau
-  useEffect(() => {
-    if (objectifs.length > 0) {
-      // Récupération des objectifs complétés
-      const completedObjectifs = objectifs.filter(
-        (obj) => obj.progression === 100
+    fetchData();
+  }, [activeUser]); // 🔄 Rechargé à chaque changement d'utilisateur
+
+  const updatePreferences = async (newPreferences) => {
+    try {
+      const userPreferencesRef = doc(db, 'Preferences', activeUser.name);
+      await setDoc(userPreferencesRef, newPreferences, { merge: true });
+      setPreferences(newPreferences);
+    } catch (error) {
+      console.error(
+        '❌ Erreur lors de la mise à jour des préférences :',
+        error
       );
-
-      // ✅ Conversion des étoiles en nombre et addition correcte
-      const completedStars = completedObjectifs.reduce(
-        (total, obj) => total + Number(obj.etoiles || 0), // 🔥 Transformation en nombre ici !
-        0
-      );
-
-      console.log('Total des étoiles des objectifs terminés:', completedStars);
-
-      // ✅ Calcul du niveau et des étoiles restantes
-      const newLevel = Math.floor(completedStars / 4) + 1; // 4 étoiles par niveau
-      const newStars = completedStars % 4; // Étoiles restantes pour le palier
-
-      console.log('Niveau calculé:', newLevel);
-      console.log('Étoiles actuelles dans le palier:', newStars);
-
-      if (newLevel > currentLevel) {
-        handleLevelUp(newLevel);
-      }
-
-      setCurrentLevel(newLevel);
-      setCurrentStars(newStars);
-    } else {
-      console.log('🚨 Aucun objectif terminé trouvé.');
-      setCurrentLevel(1);
-      setCurrentStars(0);
     }
-  }, [objectifs]);
-
-  const handleLevelUp = (newLevel) => {
-    toast.success(`🎉 Félicitations ! Niveau ${newLevel} débloqué !`);
   };
+
+  // 🔹 Gestion des étoiles et niveaux
+  useEffect(() => {
+    const completedStars = objectifs
+      .filter((o) => o.progression === 100)
+      .reduce((acc, obj) => acc + Number(obj.etoiles || 0), 0);
+    const newLevel = Math.floor(completedStars / 4) + 1;
+    const newStars = completedStars % 4;
+
+    if (newLevel > currentLevel)
+      toast.success(`🎉 Niveau ${newLevel} débloqué !`);
+    setCurrentLevel(newLevel);
+    setCurrentStars(newStars);
+  }, [objectifs]);
 
   // 🔥 🔹 **Fonctions CRUD pour les Objectifs**
   const saveObjectif = async (objectif, id = null) => {
@@ -178,6 +168,8 @@ export const FirestoreProvider = ({ children }) => {
         saveSession,
         currentLevel, // 🚀 Exposer le niveau
         currentStars, // 🚀 Exposer les étoiles
+        setPreferences, // 🔹 Pour les mises à jour locales uniquement (rarement utilisé)
+        updatePreferences, // 🔹 Pour les mises à jour complètes (local + Firestore)
       }}
     >
       {children}

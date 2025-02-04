@@ -1,37 +1,55 @@
-const defaultColors = {
-  // **Palette principale**
-  primary: '#0ba4b3', // Bleu principal inspiré du logo
-  accent: '#eca72c', // Jaune/orange inspiré du logo
-  secondary: '#617bbe', // Bleu secondaire pour les liens et éléments interactifs
+import { darken, lighten } from 'polished';
+
+const generateDerivedColors = (palette) => ({
+  // **Palette principale (personnalisable)**
+  primary: palette.primary,
+  accent: palette.accent,
+  secondary: palette.secondary,
 
   // **Fonds**
-  backgroundBaseDark: '#111111', // Fond général sombre (base du mode dark)
-  backgroundBaseLight: '#F5F5F5', // Fond général clair (base du mode light)
-  backgroundSurfaceDark: '#1e1e1e', // Surfaces secondaires sombres (cartes, panneaux)
-  backgroundSurfaceLight: '#ededed', // Surfaces secondaires claires (cartes, panneaux)
-  backgroundHighlight: '#0c3434', // Fond mis en avant (hover, focus, actifs)
+  backgroundBaseDark: palette.backgroundBaseDark,
+  backgroundBaseLight: palette.backgroundBaseLight,
+  backgroundSurfaceDark: palette.backgroundSurfaceDark,
+  backgroundSurfaceLight: palette.backgroundSurfaceLight,
+  backgroundHighlight: palette.secondary,
 
   // **Texte**
-  textPrimaryDark: '#ededed', // Texte principal en mode sombre
-  textPrimaryLight: '#333333', // Texte principal en mode clair
-  textSecondaryDark: '#bdbdbd', // Texte secondaire en mode sombre
-  textSecondaryLight: '#5f5f5f', // Texte secondaire en mode clair
-  textAccent: '#eca72c', // Texte accentué, commun aux deux modes
+  textPrimaryDark: palette.textPrimaryDark,
+  textPrimaryLight: palette.textPrimaryLight,
+  textSecondaryDark: lighten(0.2, defaultPalette.textPrimaryDark),
+  textSecondaryLight: darken(0.2, defaultPalette.textPrimaryLight),
 
-  // **Liens**
-  linkPrimary: '#0ba4b3', // Couleur principale des liens
-  linkHover: '#0ba4b3', // Couleur des liens au survol
-  linkActive: '#0ba4b3', // Couleur des liens actifs
-  linkVisited: '#4e6d9c', // Couleur des liens visités
+  textAccent: palette.accent,
 
-  // **Bordures**
-  borderBaseDark: '#222627', // Bordures générales en mode sombre
-  borderBaseLight: '#b3b3b3', // Bordures générales en mode clair
-  borderAccent: '#617bbe', // Bordures interactives ou décoratives
+  // **Liens** (dérivés du primaire)
+  linkPrimary: palette.primary,
+  linkHover: darken(0.1, defaultPalette.primary),
+  linkActive: darken(0.15, defaultPalette.primary),
+  linkVisited: darken(0.15, defaultPalette.secondary),
 
-  // **Danger**
-  danger: '#B00020', // Couleur des erreurs
-  dangerHover: '#cc0000', // Couleur des erreurs au survol
+  // **Bordures** (dérivées du background et secondary)
+  borderBaseDark: darken(0.1, defaultPalette.backgroundBaseDark),
+  borderBaseLight: lighten(0.2, defaultPalette.backgroundBaseLight),
+  borderAccent: palette.secondary,
+
+  // **Danger** (fixe pour conserver un standard)
+  danger: '#B00020',
+  dangerHover: '#cc0000',
+});
+
+// 🎨 Palette par défaut
+const defaultPalette = {
+  primary: '#0ba4b3',
+  accent: '#eca72c',
+  secondary: '#617bbe',
+  backgroundBaseDark: '#111111',
+  backgroundBaseLight: '#F5F5F5',
+  backgroundSurfaceDark: '#1e1e1e',
+  backgroundSurfaceLight: '#ededed',
+  textPrimaryDark: '#ededed',
+  textPrimaryLight: '#333333',
 };
 
-export default defaultColors;
+const defaultColors = generateDerivedColors(defaultPalette);
+
+export { generateDerivedColors, defaultColors };
