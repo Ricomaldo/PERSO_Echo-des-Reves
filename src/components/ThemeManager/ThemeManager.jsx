@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useTheme } from '../../utils/contexts/ThemeProvider';
+
+import { Button, ButtonGroup } from '../../components/Button';
+
 import {
   ColorPickersWrapper,
-  FontDropdown,
+  FontDropdownWrapper,
   FontSizeWrapper,
+  FontRow,
 } from './themeManagerStyles';
 
 const ThemeManager = () => {
-  const [selectedFont, setSelectedFont] = useState('Pacifico');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [fontSizes, setFontSizes] = useState({
-    h1: 24,
-    h2: 20,
-    h3: 18,
-    body: 16,
-  });
+  const { theme: currentTheme, updatePreferences } = useTheme(); // ✅ Suppression de `isThemeReady`
+  const [currentThemeDraft, setCurrentThemeDraft] = useState(
+    currentTheme || {}
+  );
+  const [openDropdown, setOpenDropdown] = useState(null); // ✅ Ajout de `useState`
+
+  useEffect(() => {
+    if (currentTheme) {
+      setCurrentThemeDraft(currentTheme);
+    }
+  }, [currentTheme]);
+
+  if (!currentThemeDraft || !currentThemeDraft.colors) {
+    return <p>Chargement du thème...</p>; // ✅ Sécurisation de l'affichage
+  }
 
   const fontOptions = [
     { label: 'Pacifico', value: "'Pacifico', sans-serif" },
@@ -30,66 +42,113 @@ const ThemeManager = () => {
     { label: 'Playfair Display', value: "'Playfair Display', serif" },
   ];
 
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
-
   const adjustFontSize = (key, increment) => {
-    setFontSizes((prev) => ({
+    setCurrentThemeDraft((prev) => ({
       ...prev,
-      [key]: Math.max(8, prev[key] + increment), // Min 8px
+      typography: {
+        ...prev.typography,
+        [`fontSize${key.toUpperCase()}`]: `${
+          parseInt(prev.typography[`fontSize${key.toUpperCase()}`]) + increment
+        }px`, // ✅ Correction
+      },
     }));
+  };
+
+  const toggleDropdown = (key) => {
+    setOpenDropdown((prev) => (prev === key ? null : key)); // ✅ Gestion du dropdown
   };
 
   return (
     <div>
-      {/* Color Pickers */}
+      {/* Sélecteurs de couleurs */}
       <ColorPickersWrapper>
-        {[
-          'primary',
-          'secondary',
-          'accent',
-          'background',
-          'surface',
-          'text',
-        ].map((colorKey) => (
+        {Object.keys(currentThemeDraft.colors).map((colorKey) => (
           <div key={colorKey}>
             <label htmlFor={colorKey}>{colorKey}</label>
-            <input type="color" id={colorKey} />
+            <input
+              type="color"
+              id={colorKey}
+              value={currentThemeDraft.colors[colorKey]}
+              onChange={(e) =>
+                setCurrentThemeDraft((prev) => ({
+                  ...prev,
+                  colors: { ...prev.colors, [colorKey]: e.target.value },
+                }))
+              }
+            />
           </div>
         ))}
       </ColorPickersWrapper>
 
-      {/* Font Dropdown */}
-      <FontDropdown $isOpen={isDropdownOpen}>
-        <button onClick={toggleDropdown}>
-          {`Police actuelle : ${selectedFont}`}
-        </button>
-        <ul>
-          {fontOptions.map((font) => (
-            <li
-              key={font.value}
-              style={{ fontFamily: font.value }}
-              onClick={() => {
-                setSelectedFont(font.label);
-                setIsDropdownOpen(false); // Fermer le menu après sélection
-              }}
-            >
-              {font.label}
-            </li>
-          ))}
-        </ul>
-      </FontDropdown>
-
-      {/* Font Size Adjustment */}
+      {/* Sélecteurs de typographie */}
       {['h1', 'h2', 'h3', 'body'].map((key) => (
-        <FontSizeWrapper key={key}>
-          <label>{`Taille de ${key.toUpperCase()}`}</label>
-          <div className="font-size-buttons">
+        <FontRow key={key}>
+          <span
+            style={{
+              fontFamily:
+                currentThemeDraft.typography[`fontFamily${key.toUpperCase()}`],
+              fontSize:
+                currentThemeDraft.typography[`fontSize${key.toUpperCase()}`],
+            }}
+          >
+            {key.toUpperCase()}
+          </span>
+
+          {/* Dropdown de police */}
+          <FontDropdownWrapper $isOpen={openDropdown === key}>
+            <button onClick={() => toggleDropdown(key)}>
+              {currentThemeDraft.typography[`fontFamily${key.toUpperCase()}`]}
+            </button>
+            {openDropdown === key && (
+              <ul>
+                {fontOptions.map((font) => (
+                  <li
+                    key={font.value}
+                    style={{ fontFamily: font.value }}
+                    onClick={() => {
+                      setCurrentThemeDraft((prev) => ({
+                        ...prev,
+                        typography: {
+                          ...prev.typography,
+                          [`fontFamily${key.toUpperCase()}`]: font.value, // ✅ Correction
+                        },
+                      }));
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {font.label}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </FontDropdownWrapper>
+
+          {/* Ajustement de la taille */}
+          <FontSizeWrapper>
             <button onClick={() => adjustFontSize(key, -1)}>-</button>
-            <span>{`${fontSizes[key]}px`}</span>
+            <span>
+              {currentThemeDraft.typography[`fontSize${key.toUpperCase()}`]}
+            </span>
             <button onClick={() => adjustFontSize(key, 1)}>+</button>
-          </div>
-        </FontSizeWrapper>
+          </FontSizeWrapper>
+        </FontRow>
       ))}
+
+      {/* Boutons d'action */}
+      <ButtonGroup>
+        <Button
+          $variant="secondary"
+          onClick={() => setCurrentThemeDraft(currentTheme)}
+        >
+          🔄 Réinitialiser
+        </Button>
+        <Button
+          $variant="primary"
+          onClick={() => updatePreferences(currentThemeDraft)}
+        >
+          💾 Sauvegarder
+        </Button>
+      </ButtonGroup>
     </div>
   );
 };

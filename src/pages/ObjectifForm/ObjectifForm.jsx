@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import 'react-datepicker/dist/react-datepicker.css';
-import { Button, ButtonGroup } from '../../components/Button';
+import { useUser } from '../../utils/contexts/UserProvider'; // ✅ Importer useUser
+
 import { useFirestore } from '../../utils/contexts/FirestoreProvider';
-import { v4 as uuidv4 } from 'uuid';
+import {
+  saveObjectif,
+  deleteObjectif,
+} from '../../utils/firebase/firestoreActions';
+import { Button, ButtonGroup } from '../../components/Button';
 import { Frame, PageTitle } from '../../layout';
 import { CustomInput } from '../../components/CustomInput';
+import { v4 as uuidv4 } from 'uuid';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const ObjectifForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { saveObjectif, deleteObjectif, objectifs } = useFirestore();
+  const { activeUser } = useUser(); // ✅ Récupérer l'utilisateur actif
+  const { objectifs } = useFirestore(); // ⚡ On récupère uniquement les objectifs
 
   const [objectif, setObjectif] = useState({
     titre: '',
     description: '',
+    etoiles: 1, // Valeur par défaut (1 étoile)
     deadline: null,
   });
 
@@ -39,7 +47,7 @@ const ObjectifForm = () => {
     const { id, value } = e.target;
     setObjectif((prev) => ({
       ...prev,
-      [id]: value,
+      [id]: id === 'etoiles' ? Math.max(1, Math.min(3, Number(value))) : value, // ⚡ Assure que les étoiles sont entre 1 et 3
     }));
   };
 
@@ -51,15 +59,19 @@ const ObjectifForm = () => {
   };
 
   const handleSave = async () => {
-    const objectifId = id || uuidv4();
+    const objectifId = id || uuidv4(); // Utilise `id` s'il est présent
+    const isNew = !id || !objectifs.some((obj) => obj.id === id); // Vérifie si l'élément est nouveau
+
     await saveObjectif(
       {
         ...objectif,
         id: objectifId,
-        progression: objectif.progression || 0, // ✅ Toujours définir une progression par défaut
+        progression: objectif.progression || 0, // Toujours définir une progression
       },
-      objectifId
+      activeUser?.name, // Ajoute le nom de l'utilisateur pour éviter l'ID incorrect
+      isNew ? null : objectifId // Passe `null` pour un nouvel élément, l'ID sinon
     );
+
     navigate('/dashboard');
   };
 
@@ -72,7 +84,7 @@ const ObjectifForm = () => {
   return (
     <>
       <PageTitle
-        title={isEditing ? 'Consulter un objectif' : 'Créer un objectif'}
+        title={isEditing ? 'Modifier un objectif' : 'Créer un objectif'}
       />
       <Frame>
         <CustomInput
@@ -80,7 +92,7 @@ const ObjectifForm = () => {
           label="Titre"
           value={objectif.titre}
           onChange={handleChange}
-          placeholder="Un titre qui nous inspire..."
+          placeholder="Un titre motivant..."
         />
 
         <CustomInput
@@ -89,15 +101,17 @@ const ObjectifForm = () => {
           type="textarea"
           value={objectif.description}
           onChange={handleChange}
-          placeholder="Qu'est-ce qui rend cet objectif motivant ? Pourquoi c'est une priorité ?"
+          placeholder="Pourquoi cet objectif est important ?"
         />
+
         <CustomInput
           id="etoiles"
           label="Nombre d'étoiles"
           type="number"
           value={objectif.etoiles}
           onChange={handleChange}
-          placeholder="Attribuez 1 à 3 étoiles"
+          min="1"
+          max="3"
         />
 
         <CustomInput
@@ -108,6 +122,7 @@ const ObjectifForm = () => {
           onChange={handleDateChange}
           placeholder="Choisissez une date"
         />
+
         <ButtonGroup $align="center">
           <Button $variant="secondary" onClick={() => navigate('/dashboard')}>
             Annuler

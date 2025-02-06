@@ -1,34 +1,42 @@
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../utils/firebase/firebaseConfig';
+import { saveObjectif } from '../../utils/firebase/firestoreActions';
 import { useState, useEffect, useCallback } from 'react';
 import { Slider } from './progressBarStyles';
 import { debounce } from 'lodash';
 
-const ProgressBar = ({ objectifId, progression, onProgressionChange }) => {
-  const [localProgression, setLocalProgression] = useState(progression);
+const ProgressBar = ({ objectif }) => {
+  // 🚨 Ajout d'une vérification de sécurité
+  if (!objectif) {
+    console.warn('⚠️ ProgressBar a reçu un objectif undefined.');
+    return null; // 🔴 Évite d'afficher un composant vide et générer une erreur
+  }
+
+  const [localProgression, setLocalProgression] = useState(
+    objectif.progression || 0
+  );
 
   useEffect(() => {
-    setLocalProgression(progression);
-  }, [progression]);
+    setLocalProgression(objectif.progression || 0);
+  }, [objectif.progression]);
 
-  const updateFirestore = useCallback(
-    debounce(async (objectifId, newProgression) => {
-      try {
-        const objectifDocRef = doc(db, 'Objectifs', objectifId);
-        await updateDoc(objectifDocRef, { progression: newProgression });
-        console.log(`Mise à jour Firestore : ${newProgression}%`);
-      } catch (e) {
-        console.error(`Erreur mise à jour objectif ${objectifId} :`, e);
+  const saveProgression = useCallback(
+    debounce(async (newProgression) => {
+      if (!objectif.id) {
+        console.error('❌ Aucun ID fourni pour la progression.');
+        return;
       }
-    }, 500), // Déclenche après 500ms sans nouvelle interaction
-    []
+
+      await saveObjectif(
+        { ...objectif, progression: newProgression },
+        objectif.participant
+      );
+    }, 500),
+    [objectif]
   );
 
   const handleChange = (event) => {
     const newProgression = parseInt(event.target.value, 10);
     setLocalProgression(newProgression);
-    updateFirestore(objectifId, newProgression);
-    onProgressionChange(objectifId, newProgression);
+    saveProgression(newProgression);
   };
 
   return (
@@ -39,7 +47,7 @@ const ProgressBar = ({ objectifId, progression, onProgressionChange }) => {
       max={100}
       $completed={localProgression >= 100}
       onChange={handleChange}
-      aria-label={`Progression de l'objectif ${objectifId}: ${localProgression}%`}
+      aria-label={`Progression de l'objectif ${objectif.id}: ${localProgression}%`}
     />
   );
 };

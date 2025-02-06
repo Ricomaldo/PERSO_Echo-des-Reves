@@ -14,6 +14,7 @@ export const ObjectiveTitle = styled.h3`
 `;
 export const StarDisplay = styled.div`
   display: flex;
+  flex-direction: row-reverse;
   gap: 4px;
   i {
     font-size: 14px;

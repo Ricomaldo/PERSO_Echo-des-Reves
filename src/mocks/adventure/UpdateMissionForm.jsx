@@ -11,7 +11,6 @@ const UpdateMissionForm = ({ missionId, initialData }) => {
     try {
       const docRef = doc(db, 'missions', missionId);
       await updateDoc(docRef, { titre, description });
-      console.log('Mise à jour réussie.');
     } catch (error) {
       console.error('Erreur lors de la mise à jour :', error);
     }

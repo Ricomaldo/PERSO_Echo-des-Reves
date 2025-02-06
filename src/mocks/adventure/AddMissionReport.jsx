@@ -15,7 +15,6 @@ function AddMissionReport() {
         date: new Date(), // La date de création.
         auteur: 'Padawan Koda',
       });
-      console.log('Compte-rendu ajouté avec succès :', docRef.id); // Succès, dans la console, nous voyons.
     } catch (e) {
       console.error('Erreur lors de l’ajout du compte-rendu :', e); // Une erreur, signalée elle sera.
     }

@@ -1,7 +1,7 @@
-import React from 'react';
 import { useUser } from '../../utils/contexts/UserProvider';
 import { useFirestore } from '../../utils/contexts/FirestoreProvider';
-import { ProgressBar } from '../../components/ProgressBar';
+import { deleteObjectif } from '../../utils/firebase/firestoreActions';
+import { ObjectifCard } from '../../components/ObjectifCard';
 import { Collapse } from '../../components/Collapse';
 import { Button, ButtonGroup } from '../../components/Button';
 import { PageTitle } from '../../layout';
@@ -19,7 +19,7 @@ import { formatDate } from '../../utils/dateUtils';
 
 function ObjectifsOverview() {
   const { activeUser } = useUser();
-  const { objectifs, deleteObjectif, isLoading } = useFirestore();
+  const { objectifs, isLoading } = useFirestore();
   const navigate = useNavigate();
 
   const inProgressObjectifs = objectifs.filter((obj) => obj.progression < 100);
@@ -42,19 +42,8 @@ function ObjectifsOverview() {
         <ObjectivesList>
           {inProgressObjectifs.map((objectif) => (
             <ObjectiveItem key={objectif.id}>
-              <Collapse title={objectif.titre}>
-                <ObjectiveDescription>
-                  {objectif.description}
-                </ObjectiveDescription>
-                <ProgressBar
-                  objectifId={objectif.id}
-                  progression={objectif.progression}
-                />
-                <DeadlineText>
-                  {objectif.deadline
-                    ? `Échéance: ${formatDate(objectif.deadline)}`
-                    : 'Pas de deadline'}
-                </DeadlineText>
+              <Collapse title={`Objectif en cours : ${objectif.titre}`}>
+                <ObjectifCard objectif={objectif} showTitle={false} />
                 <ButtonGroup>
                   <Button
                     $variant="delete"
@@ -69,7 +58,7 @@ function ObjectifsOverview() {
                     Modifier
                   </Button>
                 </ButtonGroup>
-              </Collapse>
+              </Collapse>{' '}
             </ObjectiveItem>
           ))}
         </ObjectivesList>
@@ -80,12 +69,17 @@ function ObjectifsOverview() {
           {completedObjectifs
             .slice()
             .sort((a, b) => {
-              if (!b.deadline) return -1;
-              if (!a.deadline) return 1;
-              return (
-                new Date(b.deadline.seconds * 1000) -
-                new Date(a.deadline.seconds * 1000)
-              );
+              const dateA = a.deadline
+                ? new Date(a.deadline.seconds * 1000)
+                : null;
+              const dateB = b.deadline
+                ? new Date(b.deadline.seconds * 1000)
+                : null;
+
+              if (!dateB) return -1; // Les objectifs sans deadline en bas
+              if (!dateA) return 1;
+
+              return dateB - dateA; // Tri du plus récent au plus ancien
             })
             .map((objectif) => (
               <CompletedObjectiveItem
@@ -97,7 +91,8 @@ function ObjectifsOverview() {
                     <strong>{objectif.titre}</strong> –{' '}
                     {objectif.deadline
                       ? formatDate(objectif.deadline)
-                      : 'Pas de deadline'}
+                      : 'Pas de deadline'}{' '}
+                    -
                   </div>
                   <StarDisplay>
                     {[...Array(Number(objectif.etoiles))].map((_, index) => (

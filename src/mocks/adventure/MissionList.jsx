@@ -28,7 +28,6 @@ function MissionList({ onSelectMission }) {
       const docRef = doc(db, 'missions', missionId); // Référence au document
       await deleteDoc(docRef); // Suppression du document
       setMissions((prev) => prev.filter((mission) => mission.id !== missionId)); // Met à jour la liste localement
-      console.log('Mission supprimée avec succès.');
     } catch (e) {
       console.error('Erreur lors de la suppression :', e);
     }

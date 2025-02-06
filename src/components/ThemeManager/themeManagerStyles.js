@@ -45,11 +45,17 @@ export const ColorBox = styled.div`
   border: 2px solid ${({ theme }) => theme.colors.borderBase};
 `;
 
-export const FontDropdown = styled.div`
-  position: relative;
-  display: inline-block;
-  width: 100%;
+export const FontRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
 
+export const FontDropdownWrapper = styled.div`
+  position: relative;
+  width: 180px;
+  overflow-y: auto;
   button {
     width: 100%;
     padding: 8px;
@@ -67,8 +73,7 @@ export const FontDropdown = styled.div`
   }
 
   ul {
-    display: ${({ $isOpen }) =>
-      $isOpen ? 'block' : 'none'}; /* Gestion de l'ouverture */
+    display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
     position: absolute;
     top: 100%;
     left: 0;
@@ -92,37 +97,27 @@ export const FontDropdown = styled.div`
       background: ${({ theme }) => theme.colors.backgroundHighlight};
     }
 
-    /* Font preview for each option */
     font-family: ${({ fontFamily }) => fontFamily};
   }
 `;
+
 export const FontSizeWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 16px;
+  gap: 8px;
 
-  label {
-    flex: 1;
-    margin-right: 8px;
-    font-size: ${({ theme }) => theme.typography.fontSizeBody};
-  }
+  button {
+    padding: 4px 8px;
+    background: ${({ theme }) =>
+      theme.colors.secondary}; /* ✅ Couleur de fond secondaire */
+    border: 1px solid ${({ theme }) => theme.colors.borderBase};
+    border-radius: 4px;
+    cursor: pointer;
+    color: ${({ theme }) => theme.colors.textPrimary}; /* Texte lisible */
 
-  .font-size-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    button {
-      padding: 4px 8px;
-      font-size: ${({ theme }) => theme.typography.fontSizeBody};
-      cursor: pointer;
-      border: 1px solid ${({ theme }) => theme.colors.borderBase};
-      border-radius: 4px;
-
-      &:hover {
-        background: ${({ theme }) => theme.colors.backgroundHighlight};
-      }
+    &:hover {
+      background: ${({ theme }) =>
+        theme.colors.accent}; /* Changement au survol */
     }
   }
 `;

@@ -17,7 +17,6 @@ function MissionForm() {
         date: new Date(),
         auteur: 'Padawan Irim',
       });
-      console.log('Compte-rendu ajouté avec succès');
       // Réinitialiser le formulaire.
       setTitre('');
       setDescription('');

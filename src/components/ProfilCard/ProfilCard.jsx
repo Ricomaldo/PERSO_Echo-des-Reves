@@ -34,8 +34,10 @@ function ProfilCard({
             {[...Array(3)].map((_, index) => (
               <i
                 key={index}
-                className={`fa fa-star ${
-                  index < etoilesActuelles ? 'filled' : 'empty'
+                className={` ${
+                  index < etoilesActuelles
+                    ? 'fa-solid fa-star'
+                    : 'fa-regular fa-star'
                 }`}
               />
             ))}

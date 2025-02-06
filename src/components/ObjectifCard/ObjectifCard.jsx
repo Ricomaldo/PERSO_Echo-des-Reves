@@ -7,20 +7,30 @@ import {
   StarDisplay,
 } from './objectifCardStyles';
 
-const ObjectifCard = ({ objectif, onProgressionChange, onDelete, onEdit }) => {
+const ObjectifCard = ({ objectif, onDelete, onEdit, showTitle = true }) => {
+  if (!objectif || !objectif.id) {
+    console.warn('⚠️ Objectif non valide:', objectif);
+    return null;
+  }
   return (
     <ObjectiveItem>
-      <ObjectiveTitle>{objectif.titre}</ObjectiveTitle>
+      {showTitle && <ObjectiveTitle>{objectif.titre}</ObjectiveTitle>}
       <StarDisplay>
         {[...Array(objectif.etoiles)].map((_, index) => (
-          <i key={index} className="fa fa-star filled" />
+          <i
+            key={index}
+            className={`fa ${
+              objectif.progression === 100
+                ? 'fa-solid fa-star'
+                : 'fa-regular fa-star'
+            }`}
+          />
         ))}
       </StarDisplay>
-      <ProgressBar
-        objectifId={objectif.id}
-        progression={objectif.progression}
-        onProgressionChange={onProgressionChange}
-      />
+      {/* ✅ Vérification avant d'afficher la ProgressBar */}
+      {objectif.progression !== undefined && (
+        <ProgressBar objectif={objectif} />
+      )}
       {onEdit && (
         <Button $variant="primary" onClick={() => onEdit(objectif)}>
           Modifier

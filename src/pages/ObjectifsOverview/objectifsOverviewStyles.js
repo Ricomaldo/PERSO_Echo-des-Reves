@@ -6,7 +6,7 @@ export const ObjectivesList = styled.ul`
   width: 100%;
 `;
 
-export const ObjectiveItem = styled.li`
+export const ObjectiveItem = styled.div`
   margin-bottom: 16px;
   list-style-type: none;
 `;
@@ -36,7 +36,7 @@ export const CompletedObjectiveItem = styled.li`
 `;
 export const TextAndStars = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center; /* Aligne le texte et les étoiles verticalement */
   width: 100%;
 `;
@@ -44,7 +44,7 @@ export const TextAndStars = styled.div`
 export const StarDisplay = styled.div`
   display: flex;
   gap: 4px;
-
+  margin-left: 8px;
   i {
     font-size: 12px;
     color: ${({ theme }) => theme.colors.textAccent};
