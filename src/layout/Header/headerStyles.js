@@ -20,8 +20,8 @@ export const HeaderTitle = styled.h1`
   font-size: ${({ theme }) => theme.typography.fontSizeHeader};
   text-align: center;
   color: ${({ theme }) => theme.colors.linkPrimary};
-  font-weight: ${({ theme }) => theme.typography.fontWeightHeader};
-  font-family: ${({ theme }) => theme.typography.fontFamilyHeader};
+  font-weight: 500;
+  font-family: 'Pacifico';
   flex-grow: 1;
 `;
 

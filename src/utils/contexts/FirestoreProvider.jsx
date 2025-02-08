@@ -1,26 +1,27 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useUser } from './UserProvider';
 import { useFirestoreData } from '../firebase/useFirestoreData';
 import { useLeveling } from '../firebase/useLeveling';
+import { LoaderScreen } from '../../components/LoaderScreen'; // ✅ Import du Loader
 
 const FirestoreContext = createContext();
 
 export const FirestoreProvider = ({ children }) => {
   const { activeUser } = useUser();
   const userName = activeUser?.name;
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Récupère les données Firestore liées à l'utilisateur
-  const {
-    objectifs,
-    sessions,
-    preferences,
-    themes,
-    isLoading,
-    setPreferences,
-  } = useFirestoreData(userName);
+  // ✅ Récupération des données Firestore
+  const { objectifs, sessions, preferences, themes } = useFirestoreData(
+    userName,
+    setIsLoading
+  );
 
-  // Calcule le niveau et les étoiles basés sur les objectifs
+  // ✅ Gestion de la progression
   const { currentLevel, currentStars } = useLeveling(objectifs);
+
+  if (isLoading) return <LoaderScreen />;
+  console.log('📌 FirestoreProvider retourne :', { themes, preferences });
 
   return (
     <FirestoreContext.Provider
@@ -29,8 +30,6 @@ export const FirestoreProvider = ({ children }) => {
         sessions,
         preferences,
         themes,
-        isLoading,
-        setPreferences,
         currentLevel,
         currentStars,
       }}
@@ -40,5 +39,4 @@ export const FirestoreProvider = ({ children }) => {
   );
 };
 
-// Hook pour accéder facilement aux données Firestore
 export const useFirestore = () => useContext(FirestoreContext);

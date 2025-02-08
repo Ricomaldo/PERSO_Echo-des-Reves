@@ -15,7 +15,7 @@ export const MenuPlusContainer = styled.nav`
   transition: height 0.3s ease, opacity 0.3s ease;
   visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
   border-radius: 16px 16px 0 0;
-  background-color: ${({ theme }) => theme.colors.backgroundBase};
+  background-color: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.borderBase};
   z-index: 100;
 `;
@@ -44,7 +44,7 @@ export const MenuPlusLink = styled.div`
 `;
 
 export const Text = styled.p`
-  font-family: ${({ theme }) => theme.typography.fontFamilyNeutral};
+  font-family: 'Inter';
   padding: 0 8px;
   width: 100%;
   font-weight: bold;
@@ -53,7 +53,7 @@ export const Text = styled.p`
 `;
 
 export const CancelLink = styled(Link)`
-  font-family: ${({ theme }) => theme.typography.fontFamilyNeutral};
+  font-family: 'Inter';
   font-size: 12px;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.linkPrimary};

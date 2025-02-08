@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Button } from '../../components/Button';
 import {
@@ -7,11 +7,29 @@ import {
   StarDisplay,
 } from './objectifCardStyles';
 
-const ObjectifCard = ({ objectif, onDelete, onEdit, showTitle = true }) => {
+const ObjectifCard = ({
+  objectif,
+  onDelete,
+  onEdit,
+  showTitle = true,
+  showDescription = true,
+}) => {
   if (!objectif || !objectif.id) {
     console.warn('⚠️ Objectif non valide:', objectif);
     return null;
   }
+
+  const [isCompleted, setIsCompleted] = useState(false);
+  useEffect(() => {
+    if (objectif.progression === 100) {
+      setIsCompleted(true);
+
+      // ⏳ Garder l’objectif affiché 3 secondes avant disparition
+      const timer = setTimeout(() => setIsCompleted(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [objectif.progression]);
+
   return (
     <ObjectiveItem>
       {showTitle && <ObjectiveTitle>{objectif.titre}</ObjectiveTitle>}
@@ -20,9 +38,7 @@ const ObjectifCard = ({ objectif, onDelete, onEdit, showTitle = true }) => {
           <i
             key={index}
             className={`fa ${
-              objectif.progression === 100
-                ? 'fa-solid fa-star'
-                : 'fa-regular fa-star'
+              objectif.progression === 100 ? '🌟' : 'fa-regular fa-star'
             }`}
           />
         ))}
@@ -31,6 +47,7 @@ const ObjectifCard = ({ objectif, onDelete, onEdit, showTitle = true }) => {
       {objectif.progression !== undefined && (
         <ProgressBar objectif={objectif} />
       )}
+      {showDescription && <p>{objectif.description}</p>}
       {onEdit && (
         <Button $variant="primary" onClick={() => onEdit(objectif)}>
           Modifier

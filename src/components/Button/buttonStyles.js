@@ -17,7 +17,7 @@ export const buttonVariants = {
     border: `1px solid ${theme.colors.borderAccent}`,
     hoverBackground: theme.colors.backgroundSurface,
     hoverColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
-    activeBackground: theme.colors.backgroundBase,
+    activeBackground: theme.colors.background,
     activeColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
   }),
   delete: (theme) => ({
@@ -34,8 +34,8 @@ export const buttonVariants = {
     color: theme.colors.textPrimary,
     border: `1px solid ${theme.colors.textPrimary}`,
     hoverBackground: theme.colors.backgroundSurface,
-    hoverColor: theme.colors.textAccent, // 🔥 Ajouté ici !
-    activeBackground: theme.colors.backgroundBase,
+    hoverColor: theme.colors.accent, // 🔥 Ajouté ici !
+    activeBackground: theme.colors.background,
     activeColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
   }),
   ghost: (theme) => ({
@@ -61,9 +61,8 @@ export const StyledButton = styled.button`
   max-width: ${({ $maxWidth }) => $maxWidth || 'auto'};
 
   padding: 8px 12px;
-  font-family: ${({ theme }) => theme.typography.fontFamilyNeutral};
+  font-family: 'Inter';
   font-size: 16px;
-  font-weight: ${({ theme }) => theme.typography.fontWeightBody};
 
   background-color: ${({ theme, $variant }) =>
     buttonVariants[$variant]?.(theme).background};

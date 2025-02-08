@@ -115,6 +115,17 @@ const ObjectifForm = () => {
         />
 
         <CustomInput
+          id="progression"
+          label="Progression"
+          type="number"
+          value={objectif.progression}
+          onChange={handleChange}
+          placeholder="Entre 0 et 100"
+          min="0"
+          max="100"
+        />
+
+        <CustomInput
           id="deadline"
           label="Deadline"
           type="date"

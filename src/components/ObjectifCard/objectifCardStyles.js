@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ObjectiveItem = styled.li`
   margin-bottom: 16px;
-  border: 2px solid ${({ theme }) => theme.colors.borderBase};
+  border: 1px solid ${({ theme }) => theme.colors.borderHighLight};
   padding: 8px;
   border-radius: 8px;
 `;
@@ -18,6 +18,6 @@ export const StarDisplay = styled.div`
   gap: 4px;
   i {
     font-size: 14px;
-    color: ${({ theme }) => theme.colors.textAccent};
+    color: ${({ theme }) => theme.colors.accent};
   }
 `;

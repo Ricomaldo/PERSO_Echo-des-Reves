@@ -6,8 +6,7 @@ const StyledGlobalStyle = createGlobalStyle`
   /* Style global pour le body */
   body {
     color: ${({ theme }) => theme.colors.textPrimary || '#ededed'};
-    background-color: ${({ theme }) =>
-      theme.colors.backgroundBase || '#1e1e1e'};
+    background-color: ${({ theme }) => theme.colors.background || '#1e1e1e'};
     font-family: ${({ theme }) =>
       theme.typography.fontFamilyBody || "'Caveat', sans-serif"};
     font-size: ${({ theme }) => theme.typography.fontSizeBody || '16px'};
@@ -85,7 +84,7 @@ const StyledGlobalStyle = createGlobalStyle`
 
     &:hover {
       background-color: ${({ theme }) => theme.colors.linkHover || '#4e68a9'};
-      color: ${({ theme }) => theme.colors.textAccent || '#eca72c'};
+      color: ${({ theme }) => theme.colors.accent || '#eca72c'};
     }
 
     &:active {

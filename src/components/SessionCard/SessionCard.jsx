@@ -5,6 +5,16 @@ import { SessionContent, SessionDetail } from './sessionCardStyles';
 const SessionCard = ({ session, onEdit, onNavigate }) => {
   return (
     <SessionContent>
+      {session.vigilance && (
+        <SessionDetail>
+          <h3>Vigilance :</h3>
+          {session.vigilance}
+        </SessionDetail>
+      )}
+      <SessionDetail>
+        <h3>Notes :</h3>
+        {session.notes || 'Aucune note disponible'}
+      </SessionDetail>
       <SessionDetail>
         <h3>Date :</h3>
         {new Date(session.date.seconds * 1000).toLocaleDateString('fr-FR', {
@@ -13,16 +23,6 @@ const SessionCard = ({ session, onEdit, onNavigate }) => {
           year: 'numeric',
         })}
       </SessionDetail>
-      <SessionDetail>
-        <h3>Notes :</h3>
-        {session.notes || 'Aucune note disponible'}
-      </SessionDetail>
-      {session.vigilance && (
-        <SessionDetail>
-          <h3>Vigilance :</h3>
-          {session.vigilance}
-        </SessionDetail>
-      )}
       <div>
         {onEdit && (
           <Button $variant="primary" onClick={() => onEdit(session.id)}>

@@ -6,7 +6,7 @@ export const InputWrapper = styled.div`
   gap: 8px;
 
   label {
-    font-family: ${({ theme }) => theme.typography.fontFamilyNeutral};
+    font-family: 'Inter';
     font-size: ${({ theme }) => theme.typography.fontSizeBody};
     font-weight: bold;
     color: ${({ theme }) => theme.colors.textPrimary};

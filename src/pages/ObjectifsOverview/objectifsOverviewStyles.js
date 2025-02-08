@@ -47,6 +47,6 @@ export const StarDisplay = styled.div`
   margin-left: 8px;
   i {
     font-size: 12px;
-    color: ${({ theme }) => theme.colors.textAccent};
+    color: ${({ theme }) => theme.colors.accent};
   }
 `;

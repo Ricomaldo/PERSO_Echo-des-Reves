@@ -41,12 +41,12 @@ export const Avatar = styled.img`
   object-fit: cover;
   border-style: solid;
   ${({ $size, $isActive, theme }) => css`
-    border-color: ${$isActive
-      ? theme.colors.textAccent
-      : theme.colors.linkPrimary};
+    border-color: ${$isActive ? theme.colors.accent : theme.colors.linkPrimary};
     ${sizeVariants[$size] || sizeVariants.detailed};
-  `};
-
+    // Appliquer le flou uniquement si l'utilisateur est inactif ET si la taille est "small"
+    -webkit-filter: ${!$isActive && $size === 'small' ? 'blur(1px)' : 'none'};
+    filter: ${!$isActive && $size === 'small' ? 'blur(1px)' : 'none'};
+  `}
   transition: border-color 0.2s ease;
 
   ${ProfilWrapper}:hover & {
@@ -61,7 +61,6 @@ export const Avatar = styled.img`
 export const UserName = styled.h1`
   color: ${({ theme }) => theme.colors.linkPrimary};
   font-family: ${({ theme }) => theme.typography.fontFamilyH1};
-  font-weight: ${({ theme }) => theme.typography.fontWeightH1};
   text-align: center;
   transition: color 0.2s ease;
 
@@ -86,7 +85,7 @@ export const StarArc = styled.div`
 
   .fa-star {
     font-size: 14px;
-    color: ${({ theme }) => theme.colors.textAccent};
+    color: ${({ theme }) => theme.colors.accent};
   }
 
   .empty {

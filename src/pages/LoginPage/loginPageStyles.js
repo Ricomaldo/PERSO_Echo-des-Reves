@@ -27,6 +27,5 @@ export const QuoteBloc = styled.div`
   background-color: ${({ theme }) => theme.colors.backgroundNeutral};
   border: 2px solid ${({ theme }) => theme.colors.borderBase};
   font-size: ${({ theme }) => theme.typography.fontSizeH2};
-  font-weight: ${({ theme }) => theme.typography.fontWeightH2};
   box-shadow: 0 4px 8px ${({ theme }) => theme.shadow};
 `;

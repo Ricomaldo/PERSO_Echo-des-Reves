@@ -11,14 +11,13 @@ export const CollapseHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 8px;
   width: 100%;
   cursor: pointer;
   background-color: ${({ theme }) => theme.colors.backgroundHighlight};
   transition: filter 0.2s ease;
   font-family: ${({ theme }) => theme.typography.fontFamilyH2};
   font-size: ${({ theme }) => theme.typography.fontSizeH2};
-  font-weight: ${({ theme }) => theme.typography.fontWeightH2};
   border-radius: 8px 8px 0 0;
   &:hover {
     filter: brightness(1.1);

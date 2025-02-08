@@ -1,8 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import app from './utils/firebase/firebaseConfig';
+import { useFirestore } from './utils/contexts/FirestoreProvider';
 
 import { Header, Footer } from './layout/';
-
 import { LoginPage } from './pages/LoginPage';
 import { Dashboard } from './pages/Dashboard';
 import { Historique } from './pages/Historique';
@@ -12,14 +12,25 @@ import { SessionForm } from './pages/SessionForm';
 import { ErrorPage } from './pages/ErrorPage';
 import { ObjectifsOverview } from './pages/ObjectifsOverview';
 import { Adventure } from './mocks/adventure/';
+import { LoaderScreen } from './components/LoaderScreen';
 
 function App() {
   const location = useLocation();
-
-  // Détermine si la page actuelle est la page de connexion
   const isLoginPage = location.pathname === '/';
+  const { isLoading } = useFirestore();
+  const [showLoader, setShowLoader] = useState(true);
 
-  return (
+  useEffect(() => {
+    if (!isLoading) {
+      setTimeout(() => setShowLoader(false), 500); // Transition fluide
+    } else {
+      setShowLoader(true);
+    }
+  }, [isLoading]);
+
+  return showLoader ? (
+    <LoaderScreen isLoading={true} />
+  ) : (
     <>
       <Header isLoginPage={isLoginPage} />
       <main className="content">

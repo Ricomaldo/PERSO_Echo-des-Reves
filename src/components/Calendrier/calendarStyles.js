@@ -8,7 +8,7 @@ export const CalendarWrapper = styled.div`
 
   .react-calendar {
     border: none;
-    font-family: ${({ theme }) => theme.typography.fontFamilyNeutral};
+    font-family: 'Inter';
     font-size: 16px;
     border-radius: 32px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);

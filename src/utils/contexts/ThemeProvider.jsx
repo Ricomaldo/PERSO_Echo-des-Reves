@@ -1,30 +1,39 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { useFirestore } from './FirestoreProvider';
-import { useThemeLogic } from '../firebase/useThemeLogic';
+import { useThemeLogic } from '../../styles/theme/useThemeLogic';
+import { savePreferences } from '../firebase/firestoreActions';
 
-// 📌 Création du contexte du thème
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Récupération des préférences utilisateur et des thèmes disponibles depuis Firestore
   const { preferences, themes } = useFirestore();
+  const { currentTheme } = useThemeLogic(preferences, themes);
+  const [selectedTheme, setSelectedTheme] = useState(currentTheme);
 
-  // Application de la logique du thème (mode clair/sombre + sélection du bon thème)
-  const { mode, setMode, currentTheme } = useThemeLogic(preferences, themes);
+  useEffect(() => {
+    if (preferences.favoriteTheme && themes[preferences.favoriteTheme]) {
+      console.log(
+        '🎨 Thème Firestore détecté :',
+        themes[preferences.favoriteTheme]
+      );
+      setSelectedTheme(themes[preferences.favoriteTheme]); // 🔥 Applique le bon thème
+    }
+  }, [preferences.favoriteTheme, themes]);
 
-  // Fonction pour basculer entre mode clair et sombre
-  const toggleTheme = () =>
-    setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+  const updatePreferences = (newThemeId) => {
+    const updatedPreferences = { ...preferences, favoriteTheme: newThemeId };
+    savePreferences(preferences.user, updatedPreferences);
+  };
+  console.log('📌 ThemeProvider reçoit :', { themes, preferences });
 
   return (
-    <ThemeContext.Provider value={{ mode, toggleTheme, theme: currentTheme }}>
-      {' '}
-      {/* Fournit le mode, la fonction de bascule et le thème actuel via un contexte global */}
-      <StyledThemeProvider theme={currentTheme}>{children}</StyledThemeProvider>{' '}
-      {/* Applique le thème sélectionné à tous les composants Styled-Components */}
+    <ThemeContext.Provider value={{ themes, selectedTheme, updatePreferences }}>
+      <StyledThemeProvider theme={selectedTheme}>
+        {children}
+      </StyledThemeProvider>
     </ThemeContext.Provider>
   );
 };
 
-export const useTheme = () => useContext(ThemeContext); // Hook personnalisé pour accéder facilement aux valeurs du contexte du thème
+export const useTheme = () => useContext(ThemeContext);

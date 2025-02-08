@@ -1,155 +1,147 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../../utils/contexts/ThemeProvider';
-
-import { Button, ButtonGroup } from '../../components/Button';
-
+import ThemeDropdown from './ThemeDropdown';
+import ColorPicker from './ColorPicker';
+import FontSelector from './FontSelector';
+import { saveTheme } from '../../utils/firebase/firestoreActions';
 import {
+  ThemeManagerWrapper,
+  Section,
   ColorPickersWrapper,
-  FontDropdownWrapper,
-  FontSizeWrapper,
-  FontRow,
 } from './themeManagerStyles';
 
 const ThemeManager = () => {
-  const { theme: currentTheme, updatePreferences } = useTheme(); // ✅ Suppression de `isThemeReady`
-  const [currentThemeDraft, setCurrentThemeDraft] = useState(
-    currentTheme || {}
-  );
-  const [openDropdown, setOpenDropdown] = useState(null); // ✅ Ajout de `useState`
+  const { themes, selectedTheme, updatePreferences } = useTheme();
+  const [draftTheme, setDraftTheme] = useState(selectedTheme);
+  const [newThemeName, setNewThemeName] = useState('');
+  const [isNewTheme, setIsNewTheme] = useState(false);
 
   useEffect(() => {
-    if (currentTheme) {
-      setCurrentThemeDraft(currentTheme);
-    }
-  }, [currentTheme]);
+    setDraftTheme(selectedTheme);
+  }, [selectedTheme]);
 
-  if (!currentThemeDraft || !currentThemeDraft.colors) {
-    return <p>Chargement du thème...</p>; // ✅ Sécurisation de l'affichage
-  }
-
-  const fontOptions = [
-    { label: 'Pacifico', value: "'Pacifico', sans-serif" },
-    { label: 'Caveat', value: "'Caveat', sans-serif" },
-    { label: 'Inter', value: "'Inter', sans-serif" },
-    { label: 'Orbitron', value: "'Orbitron', sans-serif" },
-    { label: 'Roboto', value: "'Roboto', sans-serif" },
-    { label: 'Lora', value: "'Lora', serif" },
-    { label: 'Oswald', value: "'Oswald', sans-serif" },
-    { label: 'Poppins', value: "'Poppins', sans-serif" },
-    { label: 'Raleway', value: "'Raleway', sans-serif" },
-    { label: 'Merriweather', value: "'Merriweather', serif" },
-    { label: 'Quicksand', value: "'Quicksand', sans-serif" },
-    { label: 'Playfair Display', value: "'Playfair Display', serif" },
-  ];
-
-  const adjustFontSize = (key, increment) => {
-    setCurrentThemeDraft((prev) => ({
+  const handleColorChange = (key, value) => {
+    setDraftTheme((prev) => ({
       ...prev,
-      typography: {
-        ...prev.typography,
-        [`fontSize${key.toUpperCase()}`]: `${
-          parseInt(prev.typography[`fontSize${key.toUpperCase()}`]) + increment
-        }px`, // ✅ Correction
-      },
+      colors: { ...prev.colors, [key]: value },
     }));
   };
 
-  const toggleDropdown = (key) => {
-    setOpenDropdown((prev) => (prev === key ? null : key)); // ✅ Gestion du dropdown
+  const handleFontChange = (key, value) => {
+    setDraftTheme((prev) => ({
+      ...prev,
+      typography: { ...prev.typography, [key]: value },
+    }));
   };
 
+  const handleSave = () => {
+    const themeId = isNewTheme
+      ? newThemeName.toLowerCase().replace(/\s+/g, '-')
+      : draftTheme.name;
+
+    saveTheme(themeId, draftTheme);
+    updatePreferences(themeId);
+    setIsNewTheme(false);
+    setNewThemeName('');
+  };
+  console.log(
+    '🎨 Couleurs affichées dans ThemeManager :',
+    Object.keys(draftTheme.colors)
+  );
+  console.log('🎨 ThemeManager draftTheme :', draftTheme);
+  console.log('🎨 Couleurs affichées :', Object.keys(draftTheme.colors));
+  const validColorKeys = [
+    'primary',
+    'secondary',
+    'accent',
+    'background',
+    'surface',
+    'text',
+  ];
+  const filteredColors = Object.fromEntries(
+    Object.entries(draftTheme.colors).filter(([key]) =>
+      validColorKeys.includes(key)
+    )
+  );
+  console.log('🎨 Couleurs affichées après filtrage :', filteredColors);
+
   return (
-    <div>
-      {/* Sélecteurs de couleurs */}
-      <ColorPickersWrapper>
-        {Object.keys(currentThemeDraft.colors).map((colorKey) => (
-          <div key={colorKey}>
-            <label htmlFor={colorKey}>{colorKey}</label>
-            <input
-              type="color"
-              id={colorKey}
-              value={currentThemeDraft.colors[colorKey]}
-              onChange={(e) =>
-                setCurrentThemeDraft((prev) => ({
-                  ...prev,
-                  colors: { ...prev.colors, [colorKey]: e.target.value },
-                }))
-              }
+    <ThemeManagerWrapper>
+      <Section>
+        <ThemeDropdown themes={themes} onChange={updatePreferences} />
+      </Section>
+      <Section>
+        <ColorPickersWrapper>
+          {validColorKeys.map((key) => (
+            <ColorPicker
+              key={key}
+              colorKey={key}
+              colorValue={draftTheme.colors[key]}
+              onChange={handleColorChange}
             />
-          </div>
+          ))}
+        </ColorPickersWrapper>
+      </Section>
+      <Section>
+        {[
+          { key: 'H1', label: 'Titre 1' },
+          { key: 'H2', label: 'Titre 2' },
+          { key: 'H3', label: 'Titre 3' },
+          { key: 'Body', label: 'Texte' },
+        ].map(({ key, label }) => (
+          <FontSelector
+            key={key}
+            keyName={key}
+            label={label}
+            fontFamily={draftTheme.typography[`fontFamily${key}`]}
+            fontSize={draftTheme.typography[`fontSize${key}`]}
+            onFontChange={(fontKey, newFont) =>
+              setDraftTheme((prev) => ({
+                ...prev,
+                typography: {
+                  ...prev.typography,
+                  [`fontFamily${fontKey}`]: newFont,
+                },
+              }))
+            }
+            onSizeChange={(sizeKey, increment) =>
+              setDraftTheme((prev) => ({
+                ...prev,
+                typography: {
+                  ...prev.typography,
+                  [`fontSize${sizeKey}`]: `${
+                    parseInt(prev.typography[`fontSize${sizeKey}`]) + increment
+                  }px`,
+                },
+              }))
+            }
+          />
         ))}
-      </ColorPickersWrapper>
-
-      {/* Sélecteurs de typographie */}
-      {['h1', 'h2', 'h3', 'body'].map((key) => (
-        <FontRow key={key}>
-          <span
-            style={{
-              fontFamily:
-                currentThemeDraft.typography[`fontFamily${key.toUpperCase()}`],
-              fontSize:
-                currentThemeDraft.typography[`fontSize${key.toUpperCase()}`],
-            }}
-          >
-            {key.toUpperCase()}
-          </span>
-
-          {/* Dropdown de police */}
-          <FontDropdownWrapper $isOpen={openDropdown === key}>
-            <button onClick={() => toggleDropdown(key)}>
-              {currentThemeDraft.typography[`fontFamily${key.toUpperCase()}`]}
+      </Section>
+      <Section>
+        {isNewTheme ? (
+          <>
+            <input
+              type="text"
+              placeholder="Nom du nouveau thème"
+              value={newThemeName}
+              onChange={(e) => setNewThemeName(e.target.value)}
+            />
+            <button onClick={handleSave} disabled={!newThemeName.trim()}>
+              ➕ Créer le thème
             </button>
-            {openDropdown === key && (
-              <ul>
-                {fontOptions.map((font) => (
-                  <li
-                    key={font.value}
-                    style={{ fontFamily: font.value }}
-                    onClick={() => {
-                      setCurrentThemeDraft((prev) => ({
-                        ...prev,
-                        typography: {
-                          ...prev.typography,
-                          [`fontFamily${key.toUpperCase()}`]: font.value, // ✅ Correction
-                        },
-                      }));
-                      setOpenDropdown(null);
-                    }}
-                  >
-                    {font.label}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </FontDropdownWrapper>
-
-          {/* Ajustement de la taille */}
-          <FontSizeWrapper>
-            <button onClick={() => adjustFontSize(key, -1)}>-</button>
-            <span>
-              {currentThemeDraft.typography[`fontSize${key.toUpperCase()}`]}
-            </span>
-            <button onClick={() => adjustFontSize(key, 1)}>+</button>
-          </FontSizeWrapper>
-        </FontRow>
-      ))}
-
-      {/* Boutons d'action */}
-      <ButtonGroup>
-        <Button
-          $variant="secondary"
-          onClick={() => setCurrentThemeDraft(currentTheme)}
-        >
-          🔄 Réinitialiser
-        </Button>
-        <Button
-          $variant="primary"
-          onClick={() => updatePreferences(currentThemeDraft)}
-        >
-          💾 Sauvegarder
-        </Button>
-      </ButtonGroup>
-    </div>
+            <button onClick={() => setIsNewTheme(false)}>❌ Annuler</button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => setIsNewTheme(true)}>
+              ➕ Nouveau thème
+            </button>
+            <button onClick={handleSave}>💾 Sauvegarder</button>
+          </>
+        )}
+      </Section>
+    </ThemeManagerWrapper>
   );
 };
 

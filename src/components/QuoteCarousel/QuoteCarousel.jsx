@@ -8,7 +8,7 @@ import {
   NextButton,
   ChevronIcon,
 } from './quoteCarouselStyles';
-import quotes from '../../utils/data/quotes';
+import quotes from '../../assets/data/quotes';
 
 const fadeVariants = {
   hidden: { opacity: 0, y: 10 },
