@@ -33,7 +33,7 @@ const ThemeManager = () => {
   const handleFontChange = (key, value) => {
     const updatedTheme = {
       ...draftTheme,
-      typography: { ...draftTheme.typography, [key]: value },
+      typography: { ...draftTheme.typography, [`fontFamily${key}`]: value },
     };
     setDraftTheme(updatedTheme);
   };
@@ -102,11 +102,16 @@ const ThemeManager = () => {
       </Section>
       <Section>
         <h3>Choix des polices</h3>
-        {['H1', 'H2', 'H3', 'Body'].map((key) => (
+        {[
+          { key: 'H1', label: 'Titre 1' },
+          { key: 'H2', label: 'Titre 2' },
+          { key: 'H3', label: 'Titre 3' },
+          { key: 'Body', label: 'Texte' },
+        ].map(({ key, label }) => (
           <FontSelector
             key={key}
             keyName={key}
-            label={`Titre ${key}`}
+            label={label}
             fontFamily={draftTheme.typography[`fontFamily${key}`]}
             fontSize={draftTheme.typography[`fontSize${key}`]}
             onFontChange={handleFontChange}
