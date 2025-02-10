@@ -6,7 +6,7 @@ const StyledGlobalStyle = createGlobalStyle`
   /* Style global pour le body */
   body {
     color: ${({ theme }) => theme.colors.textPrimary || '#ededed'};
-    background-color: ${({ theme }) => theme.colors.background || '#1e1e1e'};
+    background-color: ${({ theme }) => theme.colors.backgroundBase || '#111111'};
     font-family: ${({ theme }) =>
       theme.typography.fontFamilyBody || "'Caveat', sans-serif"};
     font-size: ${({ theme }) => theme.typography.fontSizeBody || '16px'};
