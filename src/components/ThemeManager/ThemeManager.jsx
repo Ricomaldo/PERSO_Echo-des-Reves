@@ -4,6 +4,8 @@ import ThemeDropdown from './ThemeDropdown';
 import ColorPicker from './ColorPicker';
 import FontSelector from './FontSelector';
 import { saveTheme } from '../../utils/firebase/firestoreActions';
+import { extractPalette } from '../../styles/theme/generateTheme';
+import { Button, ButtonGroup } from '../../components/Button';
 import {
   ThemeManagerWrapper,
   Section,
@@ -21,89 +23,93 @@ const ThemeManager = () => {
   }, [selectedTheme]);
 
   const handleColorChange = (key, value) => {
-    setDraftTheme((prev) => ({
-      ...prev,
-      colors: { ...prev.colors, [key]: value },
-    }));
+    const updatedTheme = {
+      ...draftTheme,
+      colors: { ...draftTheme.colors, [key]: value },
+    };
+    setDraftTheme(updatedTheme);
   };
 
   const handleFontChange = (key, value) => {
-    setDraftTheme((prev) => ({
-      ...prev,
-      typography: { ...prev.typography, [key]: value },
-    }));
+    const updatedTheme = {
+      ...draftTheme,
+      typography: { ...draftTheme.typography, [key]: value },
+    };
+    setDraftTheme(updatedTheme);
   };
 
   const handleSave = () => {
     const themeId = isNewTheme
       ? newThemeName.toLowerCase().replace(/\s+/g, '-')
-      : draftTheme.name;
+      : draftTheme.id;
 
-    saveTheme(themeId, draftTheme);
+    const palette = extractPalette(draftTheme); // 🔥 Extrait uniquement la palette brute
+
+    const themeToSave = {
+      ...draftTheme,
+      id: themeId,
+      colors: palette, // 🔥 Sauvegarde uniquement la palette brute
+
+      name: newThemeName || draftTheme.name,
+    };
+    saveTheme(themeId, themeToSave);
     updatePreferences(themeId);
+
     setIsNewTheme(false);
     setNewThemeName('');
+    setDraftTheme(themeToSave);
   };
-  console.log(
-    '🎨 Couleurs affichées dans ThemeManager :',
-    Object.keys(draftTheme.colors)
-  );
-  console.log('🎨 ThemeManager draftTheme :', draftTheme);
-  console.log('🎨 Couleurs affichées :', Object.keys(draftTheme.colors));
   const validColorKeys = [
     'primary',
     'secondary',
     'accent',
-    'background',
-    'surface',
-    'text',
+    'backgroundSurface',
+    'backgroundBase',
+    'textPrimary',
   ];
-  const filteredColors = Object.fromEntries(
-    Object.entries(draftTheme.colors).filter(([key]) =>
-      validColorKeys.includes(key)
-    )
-  );
-  console.log('🎨 Couleurs affichées après filtrage :', filteredColors);
+  const colorLabels = {
+    primary: 'Couleur principale',
+    secondary: 'Couleur secondaire',
+    accent: 'Accentuation',
+    backgroundBase: 'Arrière-plan',
+    backgroundSurface: 'Surface',
+    textPrimary: 'Texte principal',
+  };
 
   return (
     <ThemeManagerWrapper>
       <Section>
-        <ThemeDropdown themes={themes} onChange={updatePreferences} />
+        <h2>Choix du thème</h2>
+        <ThemeDropdown
+          themes={themes}
+          selectedThemeId={draftTheme.id}
+          onChange={updatePreferences}
+        />
       </Section>
       <Section>
+        <h3>Choix des couleurs</h3>
         <ColorPickersWrapper>
-          {validColorKeys.map((key) => (
+          {validColorKeys.map((colorKey) => (
             <ColorPicker
-              key={key}
-              colorKey={key}
-              colorValue={draftTheme.colors[key]}
+              key={`color-${colorKey}`}
+              colorKey={colorKey}
+              colorValue={draftTheme.colors[colorKey]}
+              label={colorLabels[colorKey]} // 🔥 Label lisible pour chaque couleur
               onChange={handleColorChange}
             />
           ))}
         </ColorPickersWrapper>
       </Section>
       <Section>
-        {[
-          { key: 'H1', label: 'Titre 1' },
-          { key: 'H2', label: 'Titre 2' },
-          { key: 'H3', label: 'Titre 3' },
-          { key: 'Body', label: 'Texte' },
-        ].map(({ key, label }) => (
+        <h3>Choix des polices</h3>
+        {['H1', 'H2', 'H3', 'Body'].map((key) => (
           <FontSelector
             key={key}
             keyName={key}
-            label={label}
+            label={`Titre ${key}`}
             fontFamily={draftTheme.typography[`fontFamily${key}`]}
             fontSize={draftTheme.typography[`fontSize${key}`]}
-            onFontChange={(fontKey, newFont) =>
-              setDraftTheme((prev) => ({
-                ...prev,
-                typography: {
-                  ...prev.typography,
-                  [`fontFamily${fontKey}`]: newFont,
-                },
-              }))
-            }
+            onFontChange={handleFontChange}
             onSizeChange={(sizeKey, increment) =>
               setDraftTheme((prev) => ({
                 ...prev,
@@ -123,22 +129,19 @@ const ThemeManager = () => {
           <>
             <input
               type="text"
-              placeholder="Nom du nouveau thème"
+              placeholder="Nom du thème"
               value={newThemeName}
               onChange={(e) => setNewThemeName(e.target.value)}
             />
-            <button onClick={handleSave} disabled={!newThemeName.trim()}>
-              ➕ Créer le thème
-            </button>
-            <button onClick={() => setIsNewTheme(false)}>❌ Annuler</button>
+            <Button onClick={handleSave} disabled={!newThemeName.trim()}>
+              ➕ Créer
+            </Button>
           </>
         ) : (
-          <>
-            <button onClick={() => setIsNewTheme(true)}>
-              ➕ Nouveau thème
-            </button>
-            <button onClick={handleSave}>💾 Sauvegarder</button>
-          </>
+          <ButtonGroup>
+            <Button onClick={() => setIsNewTheme(true)}>➕ Nouveau</Button>
+            <Button onClick={handleSave}>💾 Sauvegarder</Button>
+          </ButtonGroup>
         )}
       </Section>
     </ThemeManagerWrapper>

@@ -116,8 +116,10 @@ const StyledGlobalStyle = createGlobalStyle`
 `;
 
 function GlobalStyle() {
-  const { theme } = useContext(ThemeContext);
-  return <StyledGlobalStyle theme={theme} />;
+  const { selectedTheme } = useContext(ThemeContext);
+  console.log('🖌️ selectedTheme dans GlobalStyle :', selectedTheme);
+
+  return <StyledGlobalStyle theme={selectedTheme} />;
 }
 
 export default GlobalStyle;

@@ -8,9 +8,11 @@ export const ThemeManagerWrapper = styled.div`
 `;
 
 export const Section = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-bottom: 16px;
-  justify-content: center;
   align-items: center;
+  gap: 8px;
   font-size: ${({ theme }) => theme.typography.fontSizeNeutral};
   select {
     padding: 8px;
@@ -23,7 +25,6 @@ export const ColorPickersWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* ✅ Deux colonnes */
   gap: 8px; /* ✅ Ajout d'espace entre les éléments */
-  margin-top: 24px;
 `;
 
 export const ColorPickerWrapper = styled.div`
@@ -43,9 +44,9 @@ export const FontRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   margin-bottom: 8px;
-  border-botom: 1px solid ${({ theme }) => theme.colors.borderBase};
-  border-radius: 8px;
+
   span {
     min-width: 20%;
   }
@@ -55,7 +56,6 @@ export const FontRow = styled.div`
 export const FontDropdownWrapper = styled.div`
   position: relative;
   // overflow-y: scroll;
-
   button {
     width: 120px;
     background: ${({ theme }) => theme.colors.backgroundSurface};
@@ -73,11 +73,12 @@ export const FontDropdownWrapper = styled.div`
 
   ul {
     display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+    background: ${({ theme }) => theme.colors.backgroundSurface};
+
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    background: ${({ theme }) => theme.colors.backgroundSurface};
     list-style: none;
     padding: 8px 0;
     margin: 0;

@@ -1,15 +1,16 @@
 import React from 'react';
 import { ColorPickerWrapper } from './themeManagerStyles';
 
-const ColorPicker = ({ colorKey, colorValue = '#000000', onChange }) => (
+const ColorPicker = ({ colorKey, colorValue = '#000000', onChange, label }) => (
   <ColorPickerWrapper>
     <input
       type="color"
       id={colorKey}
-      value={colorValue} // ✅ Toujours une valeur valide
+      value={colorValue}
       onChange={(e) => onChange(colorKey, e.target.value)}
     />
-    <label htmlFor={colorKey}>{colorKey}</label>
+    <label htmlFor={colorKey}>{label}</label>{' '}
+    {/* 🔥 Affiche un label lisible */}
   </ColorPickerWrapper>
 );
 

@@ -94,12 +94,19 @@ export const StarArc = styled.div`
 `;
 
 export const LevelBlock = styled.div`
-  background: 'transparent';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+  background: ${({ theme }) => theme.colors.backgroundSurface};
   color: ${({ theme }) => theme.colors.accent};
-  font-size: ${({ theme }) => theme.typography.fontSizeBody};
+  font-family: 'Inter';
+  font-size: 14px;
   font-weight: bold;
-  border-radius: 8px;
+  width: 16px;
+  height: 16px;
   position: absolute;
-
-  top: 30px;
+  border: 2px solid ${({ theme }) => theme.colors.accent};
+  border-radius: 2px;
+  top: 32px;
 `;

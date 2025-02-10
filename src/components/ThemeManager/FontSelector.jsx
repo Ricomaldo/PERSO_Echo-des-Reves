@@ -4,7 +4,7 @@ import {
   FontDropdownWrapper,
   FontSizeWrapper,
 } from './themeManagerStyles';
-import { fonts } from '../../assets/data/fonts'; // ✅ On importe la liste des polices
+import { fonts } from '../../assets/data/fonts';
 
 const FontSelector = ({
   keyName,
@@ -16,19 +16,16 @@ const FontSelector = ({
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-  // 🛠 Extrait uniquement le nom de la police (ex: "Pacifico" au lieu de "Pacifico, sans-serif")
   const extractFontName = (fullFontName) =>
     fullFontName?.split(',')[0] || 'Sans Nom';
 
   return (
     <FontRow>
       <span>{label}</span>
-
-      {/* 📌 Sélecteur de police */}
       <FontDropdownWrapper $isOpen={isDropdownOpen}>
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
-          style={{ fontFamily: fontFamily }}
+          style={{ fontFamily }}
         >
           {extractFontName(fontFamily)}
         </button>
@@ -39,7 +36,7 @@ const FontSelector = ({
                 key={font.name}
                 onClick={() => {
                   onFontChange(keyName, `${font.name}, sans-serif`);
-                  setDropdownOpen(false); // Fermer le dropdown après sélection
+                  setDropdownOpen(false);
                 }}
                 style={{ fontFamily: `${font.name}, sans-serif` }}
               >
@@ -49,8 +46,6 @@ const FontSelector = ({
           </ul>
         )}
       </FontDropdownWrapper>
-
-      {/* 📌 Sélecteur de taille */}
       <FontSizeWrapper>
         <button onClick={() => onSizeChange(keyName, -1)}>-</button>
         <span>{parseInt(fontSize) || '—'}</span>

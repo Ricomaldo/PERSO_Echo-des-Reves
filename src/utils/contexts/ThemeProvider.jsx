@@ -1,34 +1,55 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { useFirestore } from './FirestoreProvider';
-import { useThemeLogic } from '../../styles/theme/useThemeLogic';
 import { savePreferences } from '../firebase/firestoreActions';
+import { generateTheme } from '../../styles/theme/generateTheme';
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const { preferences, themes } = useFirestore();
-  const { currentTheme } = useThemeLogic(preferences, themes);
-  const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+
+  // 🌟 Charge depuis localStorage en priorité
+  const [selectedTheme, setSelectedTheme] = useState(() => {
+    const storedTheme = localStorage.getItem('selectedTheme');
+    return storedTheme
+      ? JSON.parse(storedTheme)
+      : generateTheme(themes[preferences.favoriteTheme]);
+  });
 
   useEffect(() => {
     if (preferences.favoriteTheme && themes[preferences.favoriteTheme]) {
-      console.log(
-        '🎨 Thème Firestore détecté :',
-        themes[preferences.favoriteTheme]
-      );
-      setSelectedTheme(themes[preferences.favoriteTheme]); // 🔥 Applique le bon thème
+      const newTheme = generateTheme(themes[preferences.favoriteTheme]);
+      setSelectedTheme(newTheme);
+      localStorage.setItem('selectedTheme', JSON.stringify(newTheme)); // ✅ Stocke pour persistance
     }
   }, [preferences.favoriteTheme, themes]);
 
   const updatePreferences = (newThemeId) => {
-    const updatedPreferences = { ...preferences, favoriteTheme: newThemeId };
-    savePreferences(preferences.user, updatedPreferences);
-  };
-  console.log('📌 ThemeProvider reçoit :', { themes, preferences });
+    if (!newThemeId) return;
 
+    savePreferences(preferences.user, {
+      ...preferences,
+      favoriteTheme: newThemeId,
+    });
+    const updatedTheme = generateTheme(themes[newThemeId]);
+    setSelectedTheme(updatedTheme);
+    localStorage.setItem('selectedTheme', JSON.stringify(updatedTheme));
+  };
+  const applyDraftTheme = (draftTheme) => {
+    if (draftTheme) {
+      setSelectedTheme(draftTheme); // Applique le thème temporairement
+    }
+  };
   return (
-    <ThemeContext.Provider value={{ themes, selectedTheme, updatePreferences }}>
+    <ThemeContext.Provider
+      value={{
+        themes,
+        selectedTheme,
+        updatePreferences,
+        applyDraftTheme, // Ajout du callback
+      }}
+    >
       <StyledThemeProvider theme={selectedTheme}>
         {children}
       </StyledThemeProvider>

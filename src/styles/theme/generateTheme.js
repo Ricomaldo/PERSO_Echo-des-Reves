@@ -1,46 +1,67 @@
-import { darken } from 'polished'; // ✅ Pour ajuster les couleurs dynamiquement
+import { darken } from 'polished';
 
 /** 🔥 Génère un thème complet à partir des données Firestore */
-export const generateTheme = (themeData) => {
+export const generateTheme = (themeData = {}) => {
+  const normalizeColor = (color) => {
+    if (!color) return '#000000';
+    if (color.length === 4) {
+      // Convertit `#rgb` en `#rrggbb`
+      return `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`;
+    }
+    return color;
+  };
   const baseColors = {
-    primary: themeData.primary || '#0ba4b3',
-    secondary: themeData.secondary || '#617bbe',
-    accent: themeData.accent || '#eca72c',
-    background: themeData.background || '#111111',
-    surface: themeData.surface || '#1e1e1e',
-    textPrimary: themeData.text || '#ededed',
-    textSecondary: darken(0.2, themeData.text || '#ededed'), // ✅ Génère une variation automatique
+    primary: normalizeColor(themeData.colors?.primary) || '#0ba4b3',
+    secondary: normalizeColor(themeData.colors?.secondary) || '#617bbe',
+    accent: normalizeColor(themeData.colors?.accent) || '#eca72c',
+    backgroundBase:
+      normalizeColor(themeData.colors?.backgroundBase) || '#111111',
+    backgroundSurface:
+      normalizeColor(themeData.colors?.backgroundSurface) || '#1e1e1e',
+    textPrimary: normalizeColor(themeData.colors?.textPrimary) || '#ededed',
   };
 
   return {
+    id: themeData.id || 'default-dark',
     name: themeData.name || 'Thème inconnu',
     colors: {
       ...baseColors,
-      backgroundBase: baseColors.background,
-      backgroundSurface: baseColors.surface,
       backgroundHighlight: baseColors.secondary,
-      textPrimary: baseColors.textPrimary,
-      textSecondary: baseColors.textSecondary,
-      accent: baseColors.accent,
+      textSecondary: baseColors.textPrimary,
       linkPrimary: baseColors.primary,
       linkHover: darken(0.1, baseColors.primary),
       linkActive: darken(0.15, baseColors.primary),
       linkVisited: darken(0.15, baseColors.secondary),
-      borderBase: darken(0.1, baseColors.background),
+      borderBase: darken(0.1, baseColors.backgroundBase),
       borderAccent: baseColors.secondary,
       danger: '#B00020',
       dangerHover: '#cc0000',
     },
     typography: {
-      fontFamilyH1: themeData.fontFamilyH1 || "'Pacifico', sans-serif",
-      fontFamilyH2: themeData.fontFamilyH2 || "'Caveat', sans-serif",
-      fontFamilyH3: themeData.fontFamilyH3 || "'Caveat', sans-serif",
-      fontFamilyBody: themeData.fontFamilyBody || "'Caveat', sans-serif",
-
-      fontSizeH1: themeData.fontSizeH1 || '24px',
-      fontSizeH2: themeData.fontSizeH2 || '24px',
-      fontSizeH3: themeData.fontSizeH3 || '22px',
-      fontSizeBody: themeData.fontSizeBody || '20px',
+      fontFamilyH1:
+        themeData.typography?.fontFamilyH1 || "'Pacifico', sans-serif",
+      fontFamilyH2:
+        themeData.typography?.fontFamilyH2 || "'Caveat', sans-serif",
+      fontFamilyH3:
+        themeData.typography?.fontFamilyH3 || "'Caveat', sans-serif",
+      fontFamilyBody:
+        themeData.typography?.fontFamilyBody || "'Caveat', sans-serif",
+      fontSizeH1: themeData.typography?.fontSizeH1 || '24px',
+      fontSizeH2: themeData.typography?.fontSizeH2 || '24px',
+      fontSizeH3: themeData.typography?.fontSizeH3 || '22px',
+      fontSizeBody: themeData.typography?.fontSizeBody || '20px',
     },
+  };
+};
+
+// 🔧 Extrait les 6 couleurs principales à partir d'un thème complet
+export const extractPalette = (theme) => {
+  return {
+    primary: theme.colors.primary,
+    secondary: theme.colors.secondary,
+    accent: theme.colors.accent,
+    backgroundBase: theme.colors.backgroundBase,
+    backgroundSurface: theme.colors.backgroundSurface,
+    textPrimary: theme.colors.textPrimary, // Correspondance avec `textPrimary`
   };
 };
