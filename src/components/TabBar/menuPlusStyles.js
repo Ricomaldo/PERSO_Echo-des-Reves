@@ -15,7 +15,7 @@ export const MenuPlusContainer = styled.nav`
   transition: height 0.3s ease, opacity 0.3s ease;
   visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
   border-radius: 16px 16px 0 0;
-  background-color: ${({ theme }) => theme.colors.backgroundSurface};
+  background-color: ${({ theme }) => theme.colors.backgroundBase};
   border: 1px solid ${({ theme }) => theme.colors.borderBase};
   z-index: 100;
 `;
