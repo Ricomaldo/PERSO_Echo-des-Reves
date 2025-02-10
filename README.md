@@ -1,8 +1,6 @@
-# React + Vite
+# Echo Des Reves
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Ceci est un projet personnel qui me permet d'approfondit et d'assimiler le contenu de ma formation d'integrateur web OpenClassRooms
+demarrage v1 sept2024
+demarrge v2 jan2025
+mise en prod v2 10fev2025
