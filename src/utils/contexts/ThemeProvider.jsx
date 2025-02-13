@@ -74,10 +74,13 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const handleDarkModeChange = (isDark) => {
-    setDraftTheme((prev) => ({
-      ...prev,
-      darkMode: isDark,
-    }));
+    setDraftTheme((prev) => {
+      const updatedTheme = generateTheme({
+        ...prev,
+        darkMode: isDark,
+      });
+      return { ...updatedTheme };
+    });
   };
 
   const updatePreferences = (newThemeId, savedTheme = null) => {

@@ -37,15 +37,6 @@ export const saveObjectif = async (objectif, userName, id = null) => {
   }
 };
 
-/** 🗑️ Supprime un objectif */
-export const deleteObjectif = async (id) => {
-  try {
-    await deleteDoc(doc(db, 'Objectifs', id));
-  } catch (error) {
-    console.error('❌ Erreur suppression objectif:', error);
-  }
-};
-
 export const saveSession = async (session, userName, id = null) => {
   try {
     const sessionId = id || uuidv4();
@@ -61,5 +52,24 @@ export const saveSession = async (session, userName, id = null) => {
   } catch (error) {
     console.error('❌ Erreur sauvegarde session:', error);
     return null;
+  }
+};
+
+/** 🗑️ Supprime un objectif */
+export const deleteObjectif = async (id) => {
+  try {
+    await deleteDoc(doc(db, 'Objectifs', id));
+  } catch (error) {
+    console.error('❌ Erreur suppression objectif:', error);
+  }
+};
+
+/** 🗑️ Supprime un thème de Firestore */
+export const deleteTheme = async (themeId) => {
+  try {
+    await deleteDoc(doc(db, 'themes', themeId));
+    console.log('🗑️ Thème supprimé avec succès:', themeId);
+  } catch (error) {
+    console.error('❌ Erreur suppression thème:', error);
   }
 };

@@ -14,11 +14,14 @@ const FontSelector = ({
   fontSize,
   onFontChange,
   onSizeChange,
+  isAuthor,
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-  const extractFontName = (fullFontName) =>
-    fullFontName?.split(',')[0] || 'Sans Nom';
+  const extractFontName = (fullFontName) => {
+    const fontName = fullFontName?.split(',')[0] || 'Sans Nom';
+    return fontName.replace(/^['"]|['"]$/g, '');
+  };
 
   return (
     <FontRow>
@@ -28,6 +31,7 @@ const FontSelector = ({
           $variant="secondary"
           onClick={() => setDropdownOpen((prev) => !prev)}
           style={{ fontFamily }}
+          disabled={!isAuthor}
         >
           {extractFontName(fontFamily)}
         </Button>
@@ -49,11 +53,19 @@ const FontSelector = ({
         )}
       </FontDropdownWrapper>
       <FontSizeWrapper>
-        <Button $variant="outline" onClick={() => onSizeChange(keyName, -1)}>
+        <Button
+          $variant="secondary"
+          onClick={() => onSizeChange(keyName, -1)}
+          disabled={!isAuthor}
+        >
           -
         </Button>
         <span>{parseInt(fontSize) || '—'}</span>
-        <Button $variant="outline" onClick={() => onSizeChange(keyName, 1)}>
+        <Button
+          $variant="secondary"
+          onClick={() => onSizeChange(keyName, 1)}
+          disabled={!isAuthor}
+        >
           +
         </Button>
       </FontSizeWrapper>

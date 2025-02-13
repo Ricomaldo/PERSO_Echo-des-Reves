@@ -3,7 +3,7 @@ import { useTheme } from '../../utils/contexts/ThemeProvider';
 import ThemeDropdown from './ThemeDropdown';
 import ColorPicker from './ColorPicker';
 import FontSelector from './FontSelector';
-import { saveTheme } from '../../utils/firebase/firestoreActions';
+import { saveTheme, deleteTheme } from '../../utils/firebase/firestoreActions';
 import { extractPalette } from '../../styles/theme/generateTheme';
 import { Button, ButtonGroup } from '../../components/Button';
 import {
@@ -47,7 +47,13 @@ const ThemeManager = () => {
       setNewThemeName('');
     });
   };
-
+  const handleDelete = () => {
+    deleteTheme(draftTheme.id).then(() => {
+      updatePreferences(null, generateTheme({}));
+      setIsNewTheme(false);
+      setNewThemeName('');
+    });
+  };
   const validColorKeys = [
     'primary',
     'backgroundBase',
@@ -76,11 +82,13 @@ const ThemeManager = () => {
     <ThemeManagerWrapper>
       <Section>
         <ThemeDropdown
+          key={draftTheme.id}
           themes={themes}
           selectedThemeId={draftTheme.id}
           onChange={updatePreferences}
         />
       </Section>
+
       <Section>
         {/* <h3>Choix des couleurs</h3> */}
         <ColorPickersWrapper>
@@ -94,7 +102,17 @@ const ThemeManager = () => {
               isAuthor={isAuthor} // �� Utilisation correcte des props
             />
           ))}
-        </ColorPickersWrapper>
+        </ColorPickersWrapper>{' '}
+        {isAuthor && (
+          <label>
+            <input
+              type="checkbox"
+              checked={draftTheme.darkMode}
+              onChange={(e) => handleDarkModeChange(e.target.checked)}
+            />
+            Mode sombre
+          </label>
+        )}{' '}
       </Section>
       <Section>
         {/* <h3>Choix des polices</h3> */}
@@ -107,18 +125,9 @@ const ThemeManager = () => {
             fontSize={draftTheme.typography[`fontSize${key}`]}
             onFontChange={handleFontChange}
             onSizeChange={handleSizeChange}
+            isAuthor={isAuthor}
           />
         ))}
-      </Section>
-      <Section>
-        <label>
-          <input
-            type="checkbox"
-            checked={draftTheme.darkMode}
-            onChange={(e) => handleDarkModeChange(e.target.checked)}
-          />
-          Mode sombre
-        </label>
       </Section>
 
       <Section>
@@ -126,27 +135,34 @@ const ThemeManager = () => {
           <>
             <input
               type="text"
-              placeholder="Nom du thème"
+              placeholder="Nom du nouveau thème"
               value={newThemeName}
               onChange={(e) => {
                 setNewThemeName(e.target.value);
               }}
             />
-            <Button onClick={handleSave} disabled={!newThemeName.trim()}>
-              ➕ Créer
+            <Button
+              onClick={() => {
+                handleSave();
+              }}
+              disabled={!newThemeName.trim()}
+            >
+              Créer
             </Button>
           </>
         ) : (
-          <ButtonGroup>
+          <ButtonGroup $align="center">
+            {' '}
+            {isAuthor && <Button onClick={handleSave}>Sauvegarder</Button>}
+            {isAuthor && <Button onClick={handleDelete}>Supprimer</Button>}
             <Button
               $variant="primary"
-              onClick={() => {
+              onClick={(e) => {
                 setIsNewTheme(true);
               }}
             >
-              ➕ Nouveau
+              Nouveau à partir de {draftTheme.name}
             </Button>
-            {isAuthor && <Button onClick={handleSave}>💾 Sauvegarder</Button>}
           </ButtonGroup>
         )}
       </Section>

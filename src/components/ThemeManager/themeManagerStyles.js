@@ -11,10 +11,13 @@ export const Section = styled.div`
   flex-direction: column;
   margin-bottom: 16px;
   align-items: center;
+
   gap: 8px;
   font-size: ${({ theme }) => theme.typography.fontSizeBody};
-  select {
-    padding: 8px;
+  select,
+  input {
+    padding: 2px 8px;
+    border: 0;
     border-radius: 16px;
     font-size: ${({ theme }) => theme.typography.fontSizeH3};
     font-family: ${({ theme }) => theme.typography.fontFamilyH3};
@@ -24,7 +27,10 @@ export const Section = styled.div`
 export const ColorPickersWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  input {
+    border-radius: 4px;
+    padding: 0;
+  }
 `;
 
 export const ColorPickerWrapper = styled.div`
@@ -49,6 +55,10 @@ export const FontRow = styled.div`
 
   span {
     min-width: 72px;
+  }
+  button {
+    padding: 4px 8px;
+    border-radius: 8px;
   }
 `;
 
