@@ -3,54 +3,112 @@ import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { useFirestore } from './FirestoreProvider';
 import { savePreferences } from '../firebase/firestoreActions';
 import { generateTheme } from '../../styles/theme/generateTheme';
-
+import { useUser } from './UserProvider';
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const { preferences, themes } = useFirestore();
+  const { activeUser } = useUser();
+  const [draftTheme, setDraftTheme] = useState(() =>
+    preferences.favoriteTheme && themes[preferences.favoriteTheme]
+      ? {
+          ...generateTheme(themes[preferences.favoriteTheme]),
+          id: preferences.favoriteTheme,
+        }
+      : generateTheme({})
+  );
 
-  // 🌟 Charge depuis localStorage en priorité
-  const [selectedTheme, setSelectedTheme] = useState(() => {
-    const storedTheme = localStorage.getItem('selectedTheme');
-    return storedTheme
-      ? JSON.parse(storedTheme)
-      : generateTheme(themes[preferences.favoriteTheme]);
-  });
+  const [isAuthor, setIsAuthor] = useState(false);
 
   useEffect(() => {
-    if (preferences.favoriteTheme && themes[preferences.favoriteTheme]) {
-      const newTheme = generateTheme(themes[preferences.favoriteTheme]);
-      setSelectedTheme(newTheme);
-      localStorage.setItem('selectedTheme', JSON.stringify(newTheme)); // ✅ Stocke pour persistance
-    }
+    setIsAuthor(draftTheme.author === activeUser.name);
+  }, [draftTheme, activeUser]);
+
+  useEffect(() => {
+    setDraftTheme(
+      preferences.favoriteTheme && themes[preferences.favoriteTheme]
+        ? {
+            ...generateTheme(themes[preferences.favoriteTheme]),
+            id: preferences.favoriteTheme,
+          }
+        : generateTheme({})
+    );
   }, [preferences.favoriteTheme, themes]);
 
-  const updatePreferences = (newThemeId) => {
+  const handleColorChange = (key, value) => {
+    const normalizedColor =
+      value.length === 4
+        ? `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`
+        : value;
+
+    setDraftTheme((prev) => {
+      const newColors = { ...prev.colors, [key]: normalizedColor };
+      const updatedTheme = generateTheme({
+        ...prev,
+        colors: newColors,
+      });
+
+      return {
+        ...updatedTheme,
+      };
+    });
+  };
+
+  const handleFontChange = (key, value) => {
+    setDraftTheme((prev) => ({
+      ...prev,
+      typography: { ...prev.typography, [`fontFamily${key}`]: value },
+    }));
+  };
+
+  const handleSizeChange = (sizeKey, increment) => {
+    setDraftTheme((prev) => ({
+      ...prev,
+      typography: {
+        ...prev.typography,
+        [`fontSize${sizeKey}`]: `${
+          parseInt(prev.typography[`fontSize${sizeKey}`]) + increment
+        }px`,
+      },
+    }));
+  };
+
+  const handleDarkModeChange = (isDark) => {
+    setDraftTheme((prev) => ({
+      ...prev,
+      darkMode: isDark,
+    }));
+  };
+
+  const updatePreferences = (newThemeId, savedTheme = null) => {
     if (!newThemeId) return;
+    const updatedTheme = generateTheme(savedTheme || themes[newThemeId]);
+    if (!updatedTheme) return;
 
     savePreferences(preferences.user, {
       ...preferences,
       favoriteTheme: newThemeId,
     });
-    const updatedTheme = generateTheme(themes[newThemeId]);
-    setSelectedTheme(updatedTheme);
-    localStorage.setItem('selectedTheme', JSON.stringify(updatedTheme));
+
+    setDraftTheme({ ...updatedTheme, id: newThemeId });
+    setIsAuthor(updatedTheme?.author === activeUser);
   };
-  const applyDraftTheme = (draftTheme) => {
-    if (draftTheme) {
-      setSelectedTheme(draftTheme); // Applique le thème temporairement
-    }
-  };
+
   return (
     <ThemeContext.Provider
       value={{
+        activeUser,
         themes,
-        selectedTheme,
+        draftTheme,
+        handleColorChange,
+        handleFontChange,
+        handleSizeChange,
+        handleDarkModeChange,
         updatePreferences,
-        applyDraftTheme, // Ajout du callback
+        isAuthor,
       }}
     >
-      <StyledThemeProvider theme={selectedTheme}>
+      <StyledThemeProvider key={draftTheme.id} theme={draftTheme}>
         {children}
       </StyledThemeProvider>
     </ThemeContext.Provider>

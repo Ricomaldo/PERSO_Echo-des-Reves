@@ -21,7 +21,6 @@ export const FirestoreProvider = ({ children }) => {
   const { currentLevel, currentStars } = useLeveling(objectifs);
 
   if (isLoading) return <LoaderScreen />;
-  console.log('📌 FirestoreProvider retourne :', { themes, preferences });
 
   return (
     <FirestoreContext.Provider

@@ -12,9 +12,9 @@ export const buttonVariants = {
     activeColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
   }),
   secondary: (theme) => ({
-    background: 'transparent',
-    color: theme.colors.linkPrimary,
-    border: `1px solid ${theme.colors.borderAccent}`,
+    background: theme.colors.secondary,
+    color: theme.colors.textPrimary,
+    border: `2px solid ${theme.colors.borderAccent}`,
     hoverBackground: theme.colors.backgroundSurface,
     hoverColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
     activeBackground: theme.colors.background,
@@ -23,7 +23,7 @@ export const buttonVariants = {
   delete: (theme) => ({
     background: 'transparent',
     color: theme.colors.danger,
-    border: `1px solid ${theme.colors.danger}`,
+    border: `2px solid ${theme.colors.danger}`,
     hoverBackground: theme.colors.dangerHover,
     hoverColor: '#fff', // 🔥 Ajouté ici !
     activeBackground: '#cc0000',
@@ -32,9 +32,9 @@ export const buttonVariants = {
   outline: (theme) => ({
     background: 'transparent',
     color: theme.colors.textPrimary,
-    border: `1px solid ${theme.colors.textPrimary}`,
-    hoverBackground: theme.colors.backgroundSurface,
-    hoverColor: theme.colors.accent, // 🔥 Ajouté ici !
+    border: `2px solid ${theme.colors.textPrimary}`,
+    hoverBackground: theme.colors.linkPrimary,
+    hoverColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
     activeBackground: theme.colors.background,
     activeColor: theme.colors.textPrimary, // 🔥 Ajouté ici !
   }),

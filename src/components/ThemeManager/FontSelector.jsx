@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button } from '../Button';
 import {
   FontRow,
   FontDropdownWrapper,
@@ -23,12 +24,13 @@ const FontSelector = ({
     <FontRow>
       <span>{label}</span>
       <FontDropdownWrapper $isOpen={isDropdownOpen}>
-        <button
+        <Button
+          $variant="secondary"
           onClick={() => setDropdownOpen((prev) => !prev)}
           style={{ fontFamily }}
         >
           {extractFontName(fontFamily)}
-        </button>
+        </Button>
         {isDropdownOpen && (
           <ul>
             {fonts.map((font) => (
@@ -47,9 +49,13 @@ const FontSelector = ({
         )}
       </FontDropdownWrapper>
       <FontSizeWrapper>
-        <button onClick={() => onSizeChange(keyName, -1)}>-</button>
+        <Button $variant="outline" onClick={() => onSizeChange(keyName, -1)}>
+          -
+        </Button>
         <span>{parseInt(fontSize) || '—'}</span>
-        <button onClick={() => onSizeChange(keyName, 1)}>+</button>
+        <Button $variant="outline" onClick={() => onSizeChange(keyName, 1)}>
+          +
+        </Button>
       </FontSizeWrapper>
     </FontRow>
   );

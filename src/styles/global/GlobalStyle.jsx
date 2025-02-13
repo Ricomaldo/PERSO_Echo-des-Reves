@@ -6,7 +6,7 @@ const StyledGlobalStyle = createGlobalStyle`
   /* Style global pour le body */
   body {
     color: ${({ theme }) => theme.colors.textPrimary || '#ededed'};
-    background-color: ${({ theme }) => theme.colors.background || '#1e1e1e'};
+background-color: ${({ theme }) => theme.colors.backgroundBase || '#111111'};
     font-family: ${({ theme }) =>
       theme.typography.fontFamilyBody || "'Caveat', sans-serif"};
     font-size: ${({ theme }) => theme.typography.fontSizeBody || '16px'};
@@ -72,8 +72,7 @@ const StyledGlobalStyle = createGlobalStyle`
 
   /* Style global pour les boutons */
   button {
-    background-color: ${({ theme }) =>
-      theme.colors.backgroundHighlight || '#0c3434'};
+    background-color: ${({ theme }) => theme.colors.linkPrimary || '#0c3434'};
     color: ${({ theme }) => theme.colors.textPrimary || '#ededed'};
     border: 1px solid ${({ theme }) => theme.colors.borderBase || '#222627'};
     font-family: ${({ theme }) =>
@@ -84,12 +83,12 @@ const StyledGlobalStyle = createGlobalStyle`
 
     &:hover {
       background-color: ${({ theme }) => theme.colors.linkHover || '#4e68a9'};
-      color: ${({ theme }) => theme.colors.accent || '#eca72c'};
+      // color: ${({ theme }) => theme.colors.accent || '#eca72c'};
     }
 
     &:active {
       background-color: ${({ theme }) => theme.colors.linkActive || '#eca72c'};
-      color: ${({ theme }) => theme.colors.textPrimary || '#ededed'};
+      // color: ${({ theme }) => theme.colors.textPrimary || '#ededed'};
     }
   }
 
@@ -116,10 +115,8 @@ const StyledGlobalStyle = createGlobalStyle`
 `;
 
 function GlobalStyle() {
-  const { selectedTheme } = useContext(ThemeContext);
-  console.log('🖌️ selectedTheme dans GlobalStyle :', selectedTheme);
-
-  return <StyledGlobalStyle theme={selectedTheme} />;
+  const { draftTheme } = useContext(ThemeContext);
+  return <StyledGlobalStyle theme={draftTheme} />;
 }
 
 export default GlobalStyle;

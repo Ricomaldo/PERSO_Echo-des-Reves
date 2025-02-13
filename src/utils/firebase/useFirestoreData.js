@@ -71,6 +71,5 @@ export const useFirestoreData = (userName, setIsLoading) => {
       unsubscribeSessions();
     };
   }, [userName]);
-
   return { objectifs, sessions, themes, preferences };
 };

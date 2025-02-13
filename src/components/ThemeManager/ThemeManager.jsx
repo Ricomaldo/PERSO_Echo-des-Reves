@@ -11,75 +11,70 @@ import {
   Section,
   ColorPickersWrapper,
 } from './themeManagerStyles';
-
+import { generateTheme } from '../../styles/theme/generateTheme';
 const ThemeManager = () => {
-  const { themes, selectedTheme, updatePreferences } = useTheme();
-  const [draftTheme, setDraftTheme] = useState(selectedTheme);
+  const {
+    activeUser,
+    themes,
+    draftTheme,
+    handleColorChange,
+    handleFontChange,
+    handleSizeChange,
+    handleDarkModeChange,
+    updatePreferences,
+    isAuthor,
+  } = useTheme();
   const [newThemeName, setNewThemeName] = useState('');
   const [isNewTheme, setIsNewTheme] = useState(false);
-
-  useEffect(() => {
-    setDraftTheme(selectedTheme);
-  }, [selectedTheme]);
-
-  const handleColorChange = (key, value) => {
-    const updatedTheme = {
-      ...draftTheme,
-      colors: { ...draftTheme.colors, [key]: value },
-    };
-    setDraftTheme(updatedTheme);
-  };
-
-  const handleFontChange = (key, value) => {
-    const updatedTheme = {
-      ...draftTheme,
-      typography: { ...draftTheme.typography, [`fontFamily${key}`]: value },
-    };
-    setDraftTheme(updatedTheme);
-  };
 
   const handleSave = () => {
     const themeId = isNewTheme
       ? newThemeName.toLowerCase().replace(/\s+/g, '-')
       : draftTheme.id;
+    const palette = extractPalette(draftTheme);
 
-    const palette = extractPalette(draftTheme); // 🔥 Extrait uniquement la palette brute
-
-    const themeToSave = {
+    const updatedTheme = generateTheme({
       ...draftTheme,
-      id: themeId,
-      colors: palette, // 🔥 Sauvegarde uniquement la palette brute
-
+      author: activeUser.name,
+      colors: palette,
+      darkMode: draftTheme.darkMode || false,
       name: newThemeName || draftTheme.name,
-    };
-    saveTheme(themeId, themeToSave);
-    updatePreferences(themeId);
+    });
 
-    setIsNewTheme(false);
-    setNewThemeName('');
-    setDraftTheme(themeToSave);
+    saveTheme(themeId, updatedTheme).then(() => {
+      updatePreferences(themeId, updatedTheme);
+      setIsNewTheme(false);
+      setNewThemeName('');
+    });
   };
+
   const validColorKeys = [
     'primary',
-    'secondary',
-    'accent',
-    'backgroundSurface',
     'backgroundBase',
+    'secondary',
+    'backgroundSurface',
+    'accent',
     'textPrimary',
   ];
   const colorLabels = {
-    primary: 'Couleur principale',
-    secondary: 'Couleur secondaire',
-    accent: 'Accentuation',
-    backgroundBase: 'Arrière-plan',
+    primary: 'Primaire',
+    backgroundBase: 'Background',
+    secondary: 'Secondaire',
     backgroundSurface: 'Surface',
-    textPrimary: 'Texte principal',
+    accent: 'Accentuation',
+    textPrimary: 'Texte',
+  };
+  const fontLabels = {
+    H1: 'Titre 1 :',
+    H2: 'Titre 2 :',
+    H3: 'Titre 3 :',
+    Body: 'Texte :',
   };
 
+  console.log('draftTheme', draftTheme);
   return (
     <ThemeManagerWrapper>
       <Section>
-        <h2>Choix du thème</h2>
         <ThemeDropdown
           themes={themes}
           selectedThemeId={draftTheme.id}
@@ -87,48 +82,45 @@ const ThemeManager = () => {
         />
       </Section>
       <Section>
-        <h3>Choix des couleurs</h3>
+        {/* <h3>Choix des couleurs</h3> */}
         <ColorPickersWrapper>
           {validColorKeys.map((colorKey) => (
             <ColorPicker
               key={`color-${colorKey}`}
               colorKey={colorKey}
               colorValue={draftTheme.colors[colorKey]}
-              label={colorLabels[colorKey]} // 🔥 Label lisible pour chaque couleur
+              label={colorLabels[colorKey]}
               onChange={handleColorChange}
+              isAuthor={isAuthor} // �� Utilisation correcte des props
             />
           ))}
         </ColorPickersWrapper>
       </Section>
       <Section>
-        <h3>Choix des polices</h3>
-        {[
-          { key: 'H1', label: 'Titre 1' },
-          { key: 'H2', label: 'Titre 2' },
-          { key: 'H3', label: 'Titre 3' },
-          { key: 'Body', label: 'Texte' },
-        ].map(({ key, label }) => (
+        {/* <h3>Choix des polices</h3> */}
+        {['H1', 'H2', 'H3', 'Body'].map((key) => (
           <FontSelector
             key={key}
             keyName={key}
-            label={label}
+            label={fontLabels[key]} // 🔥 Utilisation correcte des labels
             fontFamily={draftTheme.typography[`fontFamily${key}`]}
             fontSize={draftTheme.typography[`fontSize${key}`]}
             onFontChange={handleFontChange}
-            onSizeChange={(sizeKey, increment) =>
-              setDraftTheme((prev) => ({
-                ...prev,
-                typography: {
-                  ...prev.typography,
-                  [`fontSize${sizeKey}`]: `${
-                    parseInt(prev.typography[`fontSize${sizeKey}`]) + increment
-                  }px`,
-                },
-              }))
-            }
+            onSizeChange={handleSizeChange}
           />
         ))}
       </Section>
+      <Section>
+        <label>
+          <input
+            type="checkbox"
+            checked={draftTheme.darkMode}
+            onChange={(e) => handleDarkModeChange(e.target.checked)}
+          />
+          Mode sombre
+        </label>
+      </Section>
+
       <Section>
         {isNewTheme ? (
           <>
@@ -136,7 +128,9 @@ const ThemeManager = () => {
               type="text"
               placeholder="Nom du thème"
               value={newThemeName}
-              onChange={(e) => setNewThemeName(e.target.value)}
+              onChange={(e) => {
+                setNewThemeName(e.target.value);
+              }}
             />
             <Button onClick={handleSave} disabled={!newThemeName.trim()}>
               ➕ Créer
@@ -144,8 +138,15 @@ const ThemeManager = () => {
           </>
         ) : (
           <ButtonGroup>
-            <Button onClick={() => setIsNewTheme(true)}>➕ Nouveau</Button>
-            <Button onClick={handleSave}>💾 Sauvegarder</Button>
+            <Button
+              $variant="primary"
+              onClick={() => {
+                setIsNewTheme(true);
+              }}
+            >
+              ➕ Nouveau
+            </Button>
+            {isAuthor && <Button onClick={handleSave}>💾 Sauvegarder</Button>}
           </ButtonGroup>
         )}
       </Section>

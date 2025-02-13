@@ -1,7 +1,9 @@
-import { darken } from 'polished';
+import { darken, lighten } from 'polished';
 
 /** 🔥 Génère un thème complet à partir des données Firestore */
 export const generateTheme = (themeData = {}) => {
+  const isDark = themeData.darkMode ?? false; // ✅ Par défaut en mode clair
+
   const normalizeColor = (color) => {
     if (!color) return '#000000';
     if (color.length === 4) {
@@ -24,15 +26,21 @@ export const generateTheme = (themeData = {}) => {
   return {
     id: themeData.id || 'default-dark',
     name: themeData.name || 'Thème inconnu',
+    darkMode: isDark, // ✅ Ajout du mode sombre
+    author: themeData.author,
     colors: {
       ...baseColors,
-      backgroundHighlight: baseColors.secondary,
+      backgroundHighlight: isDark
+        ? darken(0.15, baseColors.secondary)
+        : lighten(0.15, baseColors.secondary),
       textSecondary: baseColors.textPrimary,
       linkPrimary: baseColors.primary,
       linkHover: darken(0.1, baseColors.primary),
       linkActive: darken(0.15, baseColors.primary),
       linkVisited: darken(0.15, baseColors.secondary),
-      borderBase: darken(0.1, baseColors.backgroundBase),
+      borderBase: isDark
+        ? lighten(0.1, baseColors.backgroundBase)
+        : darken(0.1, baseColors.backgroundBase),
       borderAccent: baseColors.secondary,
       danger: '#B00020',
       dangerHover: '#cc0000',

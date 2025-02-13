@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import { useFirestore } from '../../utils/contexts/FirestoreProvider';
 import { Collapse } from '../../components/Collapse';
@@ -7,7 +6,6 @@ import { PageTitle } from '../../layout';
 import { ObjectivesList } from './dashboardStyles';
 import { ObjectifCard } from '../../components/ObjectifCard';
 import { SessionCard } from '../../components/SessionCard';
-import { GiphyWrapper } from './dashboardStyles';
 function Dashboard() {
   const { objectifs, sessions, isLoading } = useFirestore();
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
@@ -50,18 +48,6 @@ function Dashboard() {
         ) : (
           <SessionCard session={sessions[currentSessionIndex]} />
         )}
-      </Collapse>
-
-      <Collapse title="There is no try" defaultOpen={false}>
-        <Link to="/Adventure">
-          <GiphyWrapper>
-            <iframe
-              src="https://giphy.com/embed/26FmQ6EOvLxp6cWyY"
-              allowFullScreen
-              title="Giphy"
-            ></iframe>
-          </GiphyWrapper>
-        </Link>
       </Collapse>
     </>
   );

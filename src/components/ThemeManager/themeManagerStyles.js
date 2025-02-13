@@ -4,7 +4,6 @@ import styled from 'styled-components';
 export const ThemeManagerWrapper = styled.div`
   padding: 4px;
   border-radius: 8px;
-  width: 100%;
 `;
 
 export const Section = styled.div`
@@ -13,29 +12,29 @@ export const Section = styled.div`
   margin-bottom: 16px;
   align-items: center;
   gap: 8px;
-  font-size: ${({ theme }) => theme.typography.fontSizeNeutral};
+  font-size: ${({ theme }) => theme.typography.fontSizeBody};
   select {
     padding: 8px;
     border-radius: 16px;
-    font-family: ${({ theme }) => theme.typography.fontFamilyBody};
+    font-size: ${({ theme }) => theme.typography.fontSizeH3};
+    font-family: ${({ theme }) => theme.typography.fontFamilyH3};
   }
 `;
 
 export const ColorPickersWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* ✅ Deux colonnes */
-  gap: 8px; /* ✅ Ajout d'espace entre les éléments */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
 `;
 
 export const ColorPickerWrapper = styled.div`
   display: flex;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.backgroundSurface};
   padding: 4px;
   border-radius: 8px;
   label {
     margin-left: 8px;
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.typography.fontSizeBody || '14px'};
     color: ${({ theme }) => theme.colors.textPrimary};
   }
 `;
@@ -43,32 +42,19 @@ export const ColorPickerWrapper = styled.div`
 export const FontRow = styled.div`
   display: flex;
   justify-content: space-between;
+
   align-items: center;
   gap: 16px;
-  margin-bottom: 8px;
+  width: 100%;
 
   span {
-    min-width: 20%;
+    min-width: 72px;
   }
-  // background-color: ${({ theme }) => theme.colors.backgroundSurface};
 `;
 
 export const FontDropdownWrapper = styled.div`
   position: relative;
-  // overflow-y: scroll;
-  button {
-    width: 120px;
-    background: ${({ theme }) => theme.colors.backgroundSurface};
-    border-radius: 8px;
 
-    font-family: inherit; /* Hérite de la police sélectionnée */
-    font-size: inherit; /* Hérite de la taille */
-    text-align: center;
-    cursor: pointer;
-
-    &:hover {
-      background: ${({ theme }) => theme.colors.backgroundHighlight};
-    }
   }
 
   ul {
@@ -78,9 +64,9 @@ export const FontDropdownWrapper = styled.div`
     position: absolute;
     top: 100%;
     left: 0;
-    width: 100%;
+    min-width: 100%;
     list-style: none;
-    padding: 8px 0;
+    // padding: 8px 0;
     margin: 0;
     border: 1px solid ${({ theme }) => theme.colors.borderBase};
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -91,7 +77,7 @@ export const FontDropdownWrapper = styled.div`
   }
 
   li {
-    padding: 8px;
+    // padding: 8px;
     font-size: ${({ theme }) => theme.typography.fontSizeBody};
     cursor: pointer;
     font-family: inherit;
@@ -106,19 +92,11 @@ export const FontDropdownWrapper = styled.div`
 export const FontSizeWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  gap: 4px;
+  // justify-content: space-between;
 
-  button {
-    padding: 4px 8px;
-    background: ${({ theme }) => theme.colors.linkPrimary};
-    border: 1px solid ${({ theme }) => theme.colors.borderBase};
-    border-radius: 4px;
-    cursor: pointer;
-    color: ${({ theme }) => theme.colors.textPrimary};
-
-    &:hover {
-      background: ${({ theme }) => theme.colors.linkHover};
-    }
+  text-align: center;
+  min-width: 64px;
+  span {
+    min-width: 32px;
   }
 `;
