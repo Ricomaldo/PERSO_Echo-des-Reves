@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ObjectiveItem = styled.li`
   margin-bottom: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.borderHighLight};
+  border: 1px solid ${({ theme }) => theme.colors.borderAccent};
   padding: 8px;
   border-radius: 8px;
 `;
