@@ -144,6 +144,7 @@ const ThemeManager = () => {
             <Button
               onClick={() => {
                 handleSave();
+                window.location.reload();
               }}
               disabled={!newThemeName.trim()}
             >
