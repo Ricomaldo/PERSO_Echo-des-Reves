@@ -5,6 +5,7 @@ const StyledButtonGroup = styled.div`
   justify-content: ${({ $align }) => $align || 'flex-start'};
   gap: ${({ $gap }) => $gap || '8px'};
   flex-wrap: wrap;
+  max-width: 320px;
 `;
 
 const ButtonGroup = ({ children, $align = 'flex-start', $gap = '8px' }) => {

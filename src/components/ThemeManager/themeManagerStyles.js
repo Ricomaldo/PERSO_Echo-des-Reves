@@ -4,6 +4,10 @@ import styled from 'styled-components';
 export const ThemeManagerWrapper = styled.div`
   padding: 4px;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
 `;
 
 export const Section = styled.div`
