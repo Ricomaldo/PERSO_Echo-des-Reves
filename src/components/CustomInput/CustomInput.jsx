@@ -2,6 +2,7 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { InputWrapper } from './inputStyles';
+import StarRating from './StarRating'; // Importe le composant StarRating
 
 const CustomInput = ({
   id,
@@ -28,6 +29,8 @@ const CustomInput = ({
           dateFormat="yyyy-MM-dd"
           placeholderText={placeholder}
         />
+      ) : type === 'stars' ? (
+        <StarRating value={value} onChange={onChange} />
       ) : (
         <input
           id={id}

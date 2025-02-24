@@ -22,7 +22,7 @@ const ObjectifForm = () => {
   const [objectif, setObjectif] = useState({
     titre: '',
     description: '',
-    etoiles: 1, // Valeur par défaut (1 étoile)
+    etoiles: 0, // Valeur par défaut (1 étoile)
     deadline: null,
   });
 
@@ -43,11 +43,10 @@ const ObjectifForm = () => {
     }
   }, [id, objectifs]);
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
+  const handleChange = (value) => {
     setObjectif((prev) => ({
       ...prev,
-      [id]: id === 'etoiles' ? Math.max(1, Math.min(3, Number(value))) : value, // ⚡ Assure que les étoiles sont entre 1 et 3
+      etoiles: value,
     }));
   };
 
@@ -106,12 +105,10 @@ const ObjectifForm = () => {
 
         <CustomInput
           id="etoiles"
-          label="Nombre d'étoiles"
-          type="number"
+          label="Difficulté"
+          type="stars"
           value={objectif.etoiles}
           onChange={handleChange}
-          min="1"
-          max="3"
         />
 
         <CustomInput
