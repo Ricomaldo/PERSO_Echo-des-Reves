@@ -1,8 +1,8 @@
-import HomeIcon from '@assets/icons/home.svg?react';
-import RocketIcon from '@assets/icons/rocket.svg?react';
-import PlusIcon from '@assets/icons/circle-plus.svg?react';
-import SettingsIcon from '@assets/icons/settings.svg?react';
-import CalendarIcon from '@assets/icons/calendar-days.svg?react';
+import HomeIcon from '/src/assets/icons/home.svg?react';
+import RocketIcon from '/src/assets/icons/rocket.svg?react';
+import PlusIcon from '/src/assets/icons/circle-plus.svg?react';
+import SettingsIcon from '/src/assets/icons/settings.svg?react';
+import CalendarIcon from '/src/assets/icons/calendar-days.svg?react';
 
 export const tabBarItems = [
   { name: 'home', icon: HomeIcon, link: '/dashboard' },

@@ -8,9 +8,4 @@ export default defineConfig({
     react(),
     svgr(), // Ajout du plugin pour SVG en tant que composant React
   ],
-  resolve: {
-    alias: {
-      '@assets': path.resolve(__dirname, 'src/assets'), // Alias optionnel pour simplifier les chemins
-    },
-  },
 });

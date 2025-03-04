@@ -1,5 +1,5 @@
-import RocketIcon from '@assets/icons/rocket.svg?react';
-import NotebookIcon from '@assets/icons/notebook-pen.svg?react';
+import RocketIcon from '/src/assets/icons/rocket.svg?react';
+import NotebookIcon from '/src/assets/icons/notebook-pen.svg?react';
 
 export const menuPlusItems = [
   {

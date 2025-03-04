@@ -43,10 +43,10 @@ const ObjectifForm = () => {
     }
   }, [id, objectifs]);
 
-  const handleChange = (value) => {
+  const handleChange = (id, value) => {
     setObjectif((prev) => ({
       ...prev,
-      etoiles: value,
+      [id]: id === 'etoiles' ? Math.max(1, Math.min(3, Number(value))) : value, // ⚡ Assure que les étoiles sont entre 1 et 3
     }));
   };
 
@@ -90,7 +90,7 @@ const ObjectifForm = () => {
           id="titre"
           label="Titre"
           value={objectif.titre}
-          onChange={handleChange}
+          onChange={(e) => handleChange('titre', e.target.value)}
           placeholder="Un titre motivant..."
         />
 
@@ -99,7 +99,7 @@ const ObjectifForm = () => {
           label="Description"
           type="textarea"
           value={objectif.description}
-          onChange={handleChange}
+          onChange={(e) => handleChange('description', e.target.value)}
           placeholder="Pourquoi cet objectif est important ?"
         />
 
@@ -108,7 +108,7 @@ const ObjectifForm = () => {
           label="Difficulté"
           type="stars"
           value={objectif.etoiles}
-          onChange={handleChange}
+          onChange={(value) => handleChange('etoiles', value)}
         />
 
         <CustomInput
@@ -116,7 +116,7 @@ const ObjectifForm = () => {
           label="Progression"
           type="number"
           value={objectif.progression}
-          onChange={handleChange}
+          onChange={(e) => handleChange('progression', e.target.value)}
           placeholder="Entre 0 et 100"
           min="0"
           max="100"
