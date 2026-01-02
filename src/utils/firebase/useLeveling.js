@@ -18,10 +18,10 @@ export const useLeveling = (objectifs, userName) => {
 
     const storedCompleted =
       JSON.parse(localStorage.getItem(`${userName}_completedObjectives`)) || [];
+    const isFirstLoad = !localStorage.getItem(`${userName}_firstLoad`);
 
     let completedStars = 0;
     let newCompletedObjectives = [...storedCompleted];
-    let hasNewCompletion = false;
     if (!Array.isArray(objectifs) || objectifs.length === 0) return;
 
     objectifs.forEach((obj) => {
@@ -30,12 +30,15 @@ export const useLeveling = (objectifs, userName) => {
 
         // 🚀 Vérifie si l'objectif vient juste d'être complété
         if (!storedCompleted.includes(obj.id)) {
-          newCompletedObjectives.push(obj.id); // ✅ Ajoute à la liste
-          hasNewCompletion = true;
-          toast.success(
-            `🚀 Objectif "${obj.titre}" complété ! Bravo ${activeUser.name} !`,
-            { icon: '🌟' }
-          );
+          newCompletedObjectives.push(obj.id);
+
+          // Affiche le toast seulement si ce n'est pas le premier chargement
+          if (!isFirstLoad) {
+            toast.success(
+              `🚀 Objectif "${obj.titre}" complété ! Bravo ${activeUser.name} !`,
+              { icon: '🌟' }
+            );
+          }
         }
       }
     });
@@ -53,17 +56,25 @@ export const useLeveling = (objectifs, userName) => {
     }
 
     if (newLevel > storedLevel) {
-      toast.success(
-        `🏆 Niveau ${newLevel} débloqué ! Félicitations ${activeUser.name} !`,
-        { icon: '🌟' }
-      );
-      localStorage.setItem(`${userName}_currentLevel`, newLevel); // 🔹 Stocke le niveau dans `localStorage`
+      // Toast seulement si ce n'est pas le premier chargement
+      if (!isFirstLoad) {
+        toast.success(
+          `🏆 Niveau ${newLevel} débloqué ! Félicitations ${activeUser.name} !`,
+          { icon: '🌟' }
+        );
+      }
+      localStorage.setItem(`${userName}_currentLevel`, newLevel);
+    }
+
+    // Marquer la première charge comme complétée
+    if (isFirstLoad) {
+      localStorage.setItem(`${userName}_firstLoad`, 'true');
     }
 
     // ✅ Mise à jour du state
     setCurrentLevel(newLevel);
     setCurrentStars(newStars);
-  }, [objectifs, activeUser.name, userName]); // ✅ Ajout de userName aux dépendances
+  }, [objectifs, activeUser.name, userName]);
 
   return { currentLevel, currentStars };
 };
