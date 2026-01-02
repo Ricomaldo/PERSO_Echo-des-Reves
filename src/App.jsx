@@ -13,6 +13,7 @@ import { ErrorPage } from './pages/ErrorPage';
 import { ObjectifsOverview } from './pages/ObjectifsOverview';
 import { Adventure } from './mocks/adventure/';
 import { LoaderScreen } from './components/LoaderScreen';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function App() {
   const location = useLocation();
@@ -28,26 +29,30 @@ function App() {
     }
   }, [isLoading]);
 
-  return showLoader ? (
-    <LoaderScreen isLoading={true} />
-  ) : (
-    <>
-      <Header isLoginPage={isLoginPage} />
-      <main className="content">
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/objectifs" element={<ObjectifsOverview />} />
-          <Route path="/historique" element={<Historique />} />
-          <Route path="/settings" element={<Configuration />} />
-          <Route path="/objectif/:id" element={<ObjectifForm />} />
-          <Route path="/session/:id" element={<SessionForm />} />
-          <Route path="/Adventure" element={<Adventure />} />
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </main>
-      {!isLoginPage && <Footer />}
-    </>
+  return (
+    <ErrorBoundary>
+      {showLoader ? (
+        <LoaderScreen isLoading={true} />
+      ) : (
+        <>
+          <Header isLoginPage={isLoginPage} />
+          <main className="content">
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/objectifs" element={<ObjectifsOverview />} />
+              <Route path="/historique" element={<Historique />} />
+              <Route path="/settings" element={<Configuration />} />
+              <Route path="/objectif/:id" element={<ObjectifForm />} />
+              <Route path="/session/:id" element={<SessionForm />} />
+              <Route path="/Adventure" element={<Adventure />} />
+              <Route path="*" element={<ErrorPage />} />
+            </Routes>
+          </main>
+          {!isLoginPage && <Footer />}
+        </>
+      )}
+    </ErrorBoundary>
   );
 }
 

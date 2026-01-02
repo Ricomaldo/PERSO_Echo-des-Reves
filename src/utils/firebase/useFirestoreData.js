@@ -21,18 +21,22 @@ export const useFirestoreData = (userName, setIsLoading) => {
   useEffect(() => {
     if (!userName) return;
 
-    const incrementLoading = () => setLoadingCount((prev) => prev + 1);
-    const decrementLoading = () =>
+    let isMounted = true;
+
+    // On attend exactement 4 sources: 2 listeners + 2 fetches
+    setLoadingCount(4);
+    if (isMounted) setIsLoading(true);
+
+    const decrementLoading = () => {
+      if (!isMounted) return;
       setLoadingCount((prev) => {
         const newCount = prev - 1;
-        if (newCount === 0) {
+        if (newCount === 0 && isMounted) {
           setIsLoading(false);
         }
         return newCount;
       });
-
-    setIsLoading(true);
-    incrementLoading();
+    };
 
     const objectifsQuery = query(
       collection(db, 'Objectifs'),
@@ -41,9 +45,11 @@ export const useFirestoreData = (userName, setIsLoading) => {
     const unsubscribeObjectifs = onSnapshot(
       objectifsQuery,
       (snapshot) => {
-        setObjectifs(
-          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-        );
+        if (isMounted) {
+          setObjectifs(
+            snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+          );
+        }
         decrementLoading();
       },
       (error) => {
@@ -60,9 +66,11 @@ export const useFirestoreData = (userName, setIsLoading) => {
     const unsubscribeSessions = onSnapshot(
       sessionsQuery,
       (snapshot) => {
-        setSessions(
-          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-        );
+        if (isMounted) {
+          setSessions(
+            snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+          );
+        }
         decrementLoading();
       },
       (error) => {
@@ -73,14 +81,15 @@ export const useFirestoreData = (userName, setIsLoading) => {
 
     const fetchThemes = async () => {
       try {
-        incrementLoading();
         const themesSnapshot = await getDocs(collection(db, 'themes'));
-        setThemes(
-          themesSnapshot.docs.reduce(
-            (acc, doc) => ({ ...acc, [doc.id]: doc.data() }),
-            {}
-          )
-        );
+        if (isMounted) {
+          setThemes(
+            themesSnapshot.docs.reduce(
+              (acc, doc) => ({ ...acc, [doc.id]: doc.data() }),
+              {}
+            )
+          );
+        }
         decrementLoading();
       } catch (error) {
         console.error('❌ Erreur récupération thèmes:', error);
@@ -90,9 +99,10 @@ export const useFirestoreData = (userName, setIsLoading) => {
 
     const fetchPreferences = async () => {
       try {
-        incrementLoading();
         const userPref = await getDoc(doc(db, 'preferences', userName));
-        setPreferences(userPref.exists() ? userPref.data() : {});
+        if (isMounted) {
+          setPreferences(userPref.exists() ? userPref.data() : {});
+        }
         decrementLoading();
       } catch (error) {
         console.error('❌ Erreur récupération préférences:', error);
@@ -104,6 +114,7 @@ export const useFirestoreData = (userName, setIsLoading) => {
     fetchPreferences();
 
     return () => {
+      isMounted = false;
       unsubscribeObjectifs();
       unsubscribeSessions();
     };

@@ -5,16 +5,19 @@ import { toast } from 'react-toastify';
 /**
  * Gère les étoiles et le niveau en fonction des objectifs complétés.
  * @param {Array} objectifs - Liste des objectifs de l'utilisateur
+ * @param {String} userName - Nom d'utilisateur pour isoler les données
  */
-export const useLeveling = (objectifs) => {
+export const useLeveling = (objectifs, userName) => {
   const { activeUser } = useUser();
-  const storedLevel = Number(localStorage.getItem('currentLevel')) || 1; // 🔹 Charge le niveau enregistré
+  const storedLevel = Number(localStorage.getItem(`${userName}_currentLevel`)) || 1; // 🔹 Charge le niveau enregistré
   const [currentLevel, setCurrentLevel] = useState(storedLevel);
   const [currentStars, setCurrentStars] = useState(0);
 
   useEffect(() => {
+    if (!userName) return;
+
     const storedCompleted =
-      JSON.parse(localStorage.getItem('completedObjectives')) || [];
+      JSON.parse(localStorage.getItem(`${userName}_completedObjectives`)) || [];
 
     let completedStars = 0;
     let newCompletedObjectives = [...storedCompleted];
@@ -44,7 +47,7 @@ export const useLeveling = (objectifs) => {
     // 💾 Mise à jour du `localStorage` pour éviter les répétitions
     if (newCompletedObjectives.length !== storedCompleted.length) {
       localStorage.setItem(
-        'completedObjectives',
+        `${userName}_completedObjectives`,
         JSON.stringify(newCompletedObjectives)
       );
     }
@@ -54,13 +57,13 @@ export const useLeveling = (objectifs) => {
         `🏆 Niveau ${newLevel} débloqué ! Félicitations ${activeUser.name} !`,
         { icon: '🌟' }
       );
-      localStorage.setItem('currentLevel', newLevel); // 🔹 Stocke le niveau dans `localStorage`
+      localStorage.setItem(`${userName}_currentLevel`, newLevel); // 🔹 Stocke le niveau dans `localStorage`
     }
 
     // ✅ Mise à jour du state
     setCurrentLevel(newLevel);
     setCurrentStars(newStars);
-  }, [objectifs, activeUser.name]); // ✅ Supprimé `currentLevel` des dépendances pour éviter le re-déclenchement en boucle
+  }, [objectifs, activeUser.name, userName]); // ✅ Ajout de userName aux dépendances
 
   return { currentLevel, currentStars };
 };

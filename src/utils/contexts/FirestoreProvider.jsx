@@ -11,6 +11,11 @@ export const FirestoreProvider = ({ children }) => {
   const userName = activeUser?.name;
   const [isLoading, setIsLoading] = useState(true);
 
+  // ✅ Reset loading quand l'utilisateur change
+  useEffect(() => {
+    setIsLoading(true);
+  }, [userName]);
+
   // ✅ Récupération des données Firestore
   const { objectifs, sessions, preferences, themes } = useFirestoreData(
     userName,
@@ -18,13 +23,12 @@ export const FirestoreProvider = ({ children }) => {
   );
 
   // ✅ Gestion de la progression
-  const { currentLevel, currentStars } = useLeveling(objectifs);
-
-  if (isLoading) return <LoaderScreen />;
+  const { currentLevel, currentStars } = useLeveling(objectifs, userName);
 
   return (
     <FirestoreContext.Provider
       value={{
+        isLoading,
         objectifs,
         sessions,
         preferences,
