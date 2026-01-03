@@ -1,7 +1,7 @@
 import Calendar from 'react-calendar';
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
-import { CalendarWrapper, SessionDot } from './calendarStyles';
+import { CalendarWrapper, SessionBadge } from './calendarStyles';
 
 const Calendrier = ({ sessions }) => {
   const navigate = useNavigate();
@@ -17,11 +17,16 @@ const Calendrier = ({ sessions }) => {
   const getTileContent = ({ date }) => {
     const sessionId = sessionMap[date.toDateString()];
     return sessionId ? (
-      <SessionDot
-        onClick={() => navigate(`/session/${sessionId}`)}
+      <SessionBadge
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate(`/session/${sessionId}`);
+        }}
         title="Voir la session"
         aria-label="Voir la session"
-      />
+      >
+        ●
+      </SessionBadge>
     ) : null;
   };
 
